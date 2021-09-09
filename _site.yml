@@ -1,11 +1,9 @@
-name: "MyLabJournal"
+name: "DG+ Interactive Dashboards"
 navbar:
-  title: "MyLabJournal"
+  title: "DG+ Interactive Dashboards - Q2 2021"
   left:
-    - text: "Home"
+    - text: "New Jersey"
       href: index.html
-    - text: "Journal"
+    - text: "New Jersey"
       href: Journal.html
-    - text: "Links"
-      href: Links.html
 output_dir: "docs"
