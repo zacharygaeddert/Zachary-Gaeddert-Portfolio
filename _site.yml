@@ -2,8 +2,10 @@ name: "DG+ Interactive Dashboards"
 navbar:
   title: "DG+ Interactive Dashboards - Q2 2021"
   left:
-    - text: "New Jersey"
+    - text: "Home"
       href: index.html
     - text: "New Jersey"
+      href: Quarterly-summary-1.html
+    - text: "New York"
       href: Journal.html
 output_dir: "docs"
