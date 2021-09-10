@@ -118,8 +118,9 @@ ny_2_seg2 <- ny_2 %>%
 ## Of this **`r round(sum(ny_2$capacity/1000),2)` MW** of new capacity...
 
 ```{r results = 'asis', echo = FALSE}
-for (i in levels(ny_2_seg2$meter)) {
-  print(paste("- ", "**", round(ny_2_seg2$cap[ny_2_seg2$meter == i]/1000,2), "**", " MW was ", i, sep = ""))
+for (k in levels(ny_2_seg2$meter)) {
+  cat("- ", "**", round(ny_2_seg2$cap[ny_2_seg2$meter == k]/1000,2), "**", " MW was ", k, sep = "")
+  cat("\n")
 }
 ```
 

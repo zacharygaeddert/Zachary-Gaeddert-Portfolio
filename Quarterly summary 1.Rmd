@@ -128,7 +128,8 @@ nj_2_seg2 <- nj_2 %>%
 
 ```{r results = 'asis', echo = FALSE}
 for (i in levels(nj_2_seg2$segment)) {
-  print(paste("- ", "**", round(nj_2_seg2$cap[nj_2_seg2$segment == i]/1000,2), "**", " MW was ", i, sep = ""))
+  cat("- ", "**", round(nj_2_seg2$cap[nj_2_seg2$segment == i]/1000,2), "**", " MW was ", i, sep = "")
+  cat("\n")
 }
 ```
 
