@@ -92,7 +92,8 @@ nj_2 <- nj_filter %>%
   mutate(res_cap = if_else(segment_x == 'Residential', capacity, 0),
          com_cap = if_else(segment_x == 'Non-Residential', capacity, 0),
          cs_cap = if_else(segment_x == 'Community Solar', capacity, 0),
-         month = months(as.Date(date)))
+        # month = months(as.Date(date)))
+        month = month(date))
 ```
 
 ## New Jersey added **`r round(sum(nj_2$capacity)/1000,2)` MW** of new distributed solar capacity to the interconnection queue in Q2 2021
@@ -147,7 +148,8 @@ nj_2_ut <- nj_2 %>%
 
 nj_2_ut2 <- nj_2 %>%
   group_by(utility, month) %>% 
-  summarise(cap = sum(capacity))
+  summarise(cap = sum(capacity)) %>% 
+    mutate(month = factor(month, levels = c(4, 5, 6), labels = c('April', 'May', 'June'))) 
 ```
 
 ```{r echo = FALSE}
@@ -159,7 +161,6 @@ nj_2_ut %>%
 
 ```{r echo = FALSE}
 nj_2_ut2 %>% 
-  mutate(month = factor(month, levels = c('April', 'May', 'June'), labels = c('April', 'May', 'June'))) %>% 
   hchart('column', hcaes(x = month, y = round(cap/1000, 2), group = utility)) %>% 
   hc_colors(c('#F37325', '#2490BD', "#47B970", '#b7b7b7', '#1A2B40', '#800000','#F8AA1A')) %>% 
   hc_plotOptions(series = list(stacking = 'normal')) %>% 
@@ -328,11 +329,6 @@ map_int %>% addPolygons(fillColor = ~pal(cap),
                           opacity = 0.75)) %>% 
   addProviderTiles('Esri.WorldGrayCanvas')
 ```
-
-
-
-## Project highlight: Rutgers University
-
 
 ## Filter and download data
 
