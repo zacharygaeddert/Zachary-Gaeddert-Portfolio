@@ -1,0 +1,98 @@
+---
+title: "NY Q2 Distributed Solar - Interactive Dashboard"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include = FALSE}
+library(tidyverse)
+library(dplyr)
+library(stringr)
+library(lubridate)
+library(sf)
+library(leaflet)
+library(leafpop)
+library(htmltools)
+library(scales)
+library(highcharter)
+library(reactable)
+```
+
+```{r include = FALSE}
+coned <- read.csv('raw data/ConEd2.csv') %>% 
+  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
+         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
+         Metering..NA...NM...RNM...CDG.) #%>% 
+  #mutate(date = mdy(Application.Approved.Date...Utility.))
+nyseg <- read.csv('raw data/NYSEG2.csv') %>% 
+  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
+         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
+         Metering..NA...NM...RNM...CDG.)
+or <- read.csv('raw data/O^0R2.csv') %>% 
+  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
+         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
+         Metering..NA...NM...RNM...CDG.)
+nimo <- read.csv('raw data/Niagara Mohawk (NatGrid)2.csv') %>% 
+  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
+         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
+         Metering..NA...NM...RNM...CDG.)
+ch <- read.csv('raw data/CH2.csv') %>% 
+  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
+         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
+         Metering..NA...NM...RNM...CDG.)
+pseg <- read.csv('raw data/PSEG2.csv') %>% 
+  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
+         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
+         Metering..NA...NM...RNM...CDG.)
+
+ny2 <- rbind(coned, nimo, nyseg, or, ch, pseg)
+
+rm(coned, nimo, nyseg, or, ch, pseg)
+
+ny_clean2 <- ny2 %>% 
+  rename('utility' = 'Company', 'developer' = 'Developer', 'id' = 'Application...Job..',
+         'substation' = 'Substation', 'capacity' = 'PV..kWAC.', 'date' = 'Application.Approved.Date...Utility.',
+         'complete' = 'Project.Complete..Y.N.', 'zip' = 'Zip.Code') %>% 
+  #filter(!is.na(Metering..NA...NM...RNM...CDG.)) %>% 
+  mutate(date = dmy(date),
+         capacity = as.numeric(capacity),
+         segment_x = case_when(
+           Metering..NA...NM...RNM...CDG. == 'CDG' ~ 'Community Solar',
+           capacity <= 20 ~ 'Residential',
+           capacity > 20 ~ 'Non-Residential'
+         ),
+         n = 1,
+         quarter = zoo::as.yearqtr(date, format = "%Y-%m-%d")) %>% 
+  filter(!is.na(capacity))
+```
+
+```{r include = FALSE}
+ny_sum <- ny_clean2 %>% 
+  filter(date >= '2020-07-01') %>% 
+  group_by(segment_x, quarter) %>% 
+  summarise(cap = sum(capacity)/1000)
+
+ny_2 <- ny_clean2 %>% 
+  filter(quarter == '2021 Q2') %>% 
+  mutate(res_cap = if_else(segment_x == 'Residential', capacity, 0),
+         com_cap = if_else(segment_x == 'Non-Residential', capacity, 0),
+         cs_cap = if_else(segment_x == 'Community Solar', capacity, 0),
+         month = months(as.Date(date)))
+```
+
+## New York added **`r round(sum(ny_2$capacity)/1000,2)` MW** of new distributed solar capacity to the interconnection queue in Q2 2021
+
+```{r echo = FALSE}
+ny_sum %>%
+  hchart('column', hcaes(x = as.factor(quarter), y = round(cap,2), group = segment_x)) %>% 
+  hc_colors(c('#F37325', '#2490BD', "#47B970", '#1A2B40', '#b7b7b7', '#800000','#F8AA1A')) %>% 
+  hc_plotOptions(series = list(stacking = 'normal')) %>% 
+  hc_xAxis(title = '', labels = list(step = 1) #, minorTickInterval
+  ) %>% 
+  hc_yAxis(title = list(text = 'Quarterly capacity (MW)'), style = list(fontSize = "5.0vh"))
+       
+```
+

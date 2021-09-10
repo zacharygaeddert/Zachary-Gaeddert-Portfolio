@@ -1,0 +1,30 @@
+---
+title: "Illinois Distributed Solar - Interactive Dashboard"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include = FALSE}
+library(tidyverse)
+library(dplyr)
+library(stringr)
+library(lubridate)
+library(sf)
+library(leaflet)
+library(leafpop)
+library(htmltools)
+library(scales)
+library(highcharter)
+library(reactable)
+```
+
+# What's new in the data?
+
+*Only includes projects in the most recent release - show timeframe, market share/utility leaderboard, and map*
+
+# Illinois distributed solar market - trailing 12 months
+
+*Includes everything from the reports*

@@ -1,11 +1,23 @@
 name: "DG+ Interactive Dashboards"
 navbar:
-  title: "DG+ Interactive Dashboards - Q2 2021"
+  title: "DG+ Interactive Dashboards"
   left:
     - text: "Home"
-      href: index.html
-    - text: "New Jersey"
-      href: Quarterly-summary-1.html
-    - text: "New York"
-      href: Journal.html
+      href: index.html 
+    - text: "State Overviews"
+      menu:
+      - text: "California"
+        href: CA-solar.html
+      - text: "New York"
+        href: NY-solar.html
+      - text: "New Jersey"
+        href: NJ-solar.html
+      - text: "Illinois"
+        href: IL-solar.html
+    - text: "Most recent quarter update"
+      menu:
+      - text: "New York"
+        href: Quarterly-summary-2.html
+      - text: "New Jersey"
+        href: Quarterly-summary-1.html
 output_dir: "docs"
