@@ -1,7 +1,22 @@
 ---
 title: "NJ Q2 Distributed Solar - Interactive Dashboard"
-output: html_document
+output: 
+  html_document:
+    theme: yeti
 ---
+
+<style type="text/css">
+.title {
+  display: none;
+}
+
+#getting-started img {
+  margin-right: 10px;
+}
+
+</style>
+
+<div class="row" style="padding-top: 30px;">
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -221,7 +236,8 @@ nj_2_dev %>% filter(segment_x == 'Residential') %>%
          cap = format(round(as.numeric(cap), 2), big.mark = ",")) %>% 
   knitr::kable(col.names = c("Developer", "Capacity (kW)", "Number of Projects", "Market Share"),
                digits = 2, align = 'l') %>% 
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = F) %>% 
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = T #position = 'left'
+                            ) %>% 
   kableExtra::add_header_above(c("Q2 2021" = 4))
 ```
 
@@ -236,7 +252,8 @@ nj_2_dev %>% filter(segment_x == 'Non-Residential') %>%
          cap = format(round(as.numeric(cap), 2), big.mark = ",")) %>% 
   knitr::kable(col.names = c("Developer", "Capacity (kW)", "Number of Projects", "Market Share"),
                digits = 2, align = 'l') %>% 
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = F) %>% 
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = T #position = 'left'
+                            ) %>% 
   kableExtra::add_header_above(c("Q2 2021" = 4))
 ```
 
@@ -266,7 +283,8 @@ nj_2_devb %>%
          mean = round(mean, 2)) %>% 
   knitr::kable(col.names = c("Developer", "Total Capacity (kW)", "Residential Capacity (kW)", "Non-Residential Capacity (kW)", "Average Total Capacity"),
                digits = 2, align = 'l') %>% 
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = F) %>% 
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = T #position = 'left'
+                            ) %>% 
   kableExtra::add_header_above(c("Q2 2021" = 5))
 ```
 

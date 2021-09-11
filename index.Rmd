@@ -1,6 +1,8 @@
 ---
-title: "ZachCharts"
-output: html_document
+title: "Interactive solar and storage market data dashboards - DG+ Design"
+output: 
+  html_document:
+    theme: yeti
 ---
 
 <style type="text/css">
