@@ -1,6 +1,6 @@
-name: "DG+ Interactive Dashboards"
+name: "Professional and academic data science portfolio"
 navbar:
-  title: "DG+ Interactive Dashboards"
+  title: "Professional and academic data science portfolio"
   left:
     - text: "Distributed solar market data"
       menu:
