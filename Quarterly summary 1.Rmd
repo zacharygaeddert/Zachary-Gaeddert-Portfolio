@@ -38,7 +38,7 @@ library(reactable)
 
 
 ```{r include = FALSE}
-nj11 <- read_csv('raw data/NJ11.csv') 
+nj11 <- read_csv('raw data/NJ/NJ11.csv') 
 nj11 <- nj11 %>%  rename('id' = `TI Application Number`, 'program' = 'Program', 'capacity' = 'Calculated Total System Size',
                        'segment' ='Customer Type', 'third' = 'Third Party Ownership',
                        'contractor' = 'Contractor Company', 'utility' = 'Electric Utility Name',
@@ -46,7 +46,7 @@ nj11 <- nj11 %>%  rename('id' = `TI Application Number`, 'program' = 'Program', 
                          'Interconnection', 'date' ='Acceptance Date') %>% 
   select(id, utility, capacity, date, zip, county, segment, contractor, third, program, type)
 
-nj22 <- read_csv('raw data/NJ22.csv')
+nj22 <- read_csv('raw data/NJ/NJ22.csv')
 nj22 <- nj22 %>%  rename('id' = `TI Application Number`, 'program' = 'Program', 'capacity' = 'Calculated Total System Size',
                        'segment' ='Customer Type', 'third' = 'Third Party Ownership',
                        'contractor' = 'Contractor Company', 'utility' = 'Electric Utility Name',
@@ -54,7 +54,7 @@ nj22 <- nj22 %>%  rename('id' = `TI Application Number`, 'program' = 'Program', 
                          'Interconnection', 'date' = `Acceptance                Date`) %>% 
   select(id, utility, capacity, date, zip, county, segment, contractor, third, program, type)
 
-nj33 <- read_csv('raw data/NJ33.csv')
+nj33 <- read_csv('raw data/NJ/NJ33.csv')
 nj33 <- nj33 %>% rename('id' = `SRP Registration Number`, 'program' = 'Program', 'capacity' = 'Calculated Total System Size',
                         'segment' ='Customer Type', 'third' = 'Third Party Ownership',
                         'contractor' = 'Contractor Company', 'utility' = 'Electric Utility Name',
@@ -62,7 +62,7 @@ nj33 <- nj33 %>% rename('id' = `SRP Registration Number`, 'program' = 'Program',
                           'Interconnection Type', 'date' = `Registration Acceptance Date`) %>% 
   select(id, utility, capacity, date, zip, county, segment, contractor, third, program, type)
 
-nj44 <- read_csv('raw data/NJ44.csv')
+nj44 <- read_csv('raw data/NJ/NJ44.csv')
 nj44 <- nj44 %>%  rename('id' = `TI Application Number`, 'program' = 'Program', 'capacity' = 'Calculated Total System Size',
        'segment' ='Customer Type', 'third' = 'Third Party Ownership',
        'contractor' = 'Contractor Company', 'utility' = 'Electric Utility Name',
@@ -297,7 +297,7 @@ nj_map <- nj_2 %>%
   group_by(geoid2) %>% 
   summarise(cap = sum(capacity)/1000)
 
-njmap <- st_read('raw data/acs2019_5yr_B01003_86000US08403.shp') %>% 
+njmap <- st_read('raw data/NJ/acs2019_5yr_B01003_86000US08403.shp') %>% 
   mutate(geoid2 = as.numeric(substr(geoid,8,12))) %>% 
   filter(!name == 'New Jersey',
          !geoid2 == 10990, !geoid2 == 10969)
