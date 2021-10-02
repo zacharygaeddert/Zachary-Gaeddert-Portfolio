@@ -19,7 +19,7 @@ output:
 <div class="row" style="padding-top: 30px;">
 <div class="col-sm-6">
 
-# **Data-Driven Clean Energy Market Intelligence**
+# **Professional and academic data science portfolio**
 
 Our interactive solar and storage market dashboards offer you virtually real-time updates on the latest market developments. See breakdowns of new behind-the-meter solar capacity by segment, developer, utility, and geography.
 
