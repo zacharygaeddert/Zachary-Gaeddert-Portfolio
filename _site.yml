@@ -2,22 +2,20 @@ name: "DG+ Interactive Dashboards"
 navbar:
   title: "DG+ Interactive Dashboards"
   left:
-    - text: "Home"
-      href: index.html 
-    - text: "State Overviews"
-      menu:
-      - text: "California"
-        href: CA-solar.html
-      - text: "New York"
-        href: NY-solar.html
-      - text: "New Jersey"
-        href: NJ-solar.html
-      - text: "Illinois"
-        href: IL-solar.html
-    - text: "Most recent quarter update"
+    - text: "State distributed solar market data"
       menu:
       - text: "New York"
         href: Quarterly-summary-2.html
       - text: "New Jersey"
         href: Quarterly-summary-1.html
+    - text: "State distributed solar market data (with code)"
+      menu:
+      - text: "New York"
+        href: Quarterly-summary-2.html
+      - text: "New Jersey"
+        href: Quarterly-summary-1.html
+    - text: "Econometrics with R - Academic Paper"
+      href: Econometrics-with-R.html
+    - text: "Econometrics with R - Academic Paper (with code)"
+      href: Econemetrics-with-R-code.html
 output_dir: "docs"
