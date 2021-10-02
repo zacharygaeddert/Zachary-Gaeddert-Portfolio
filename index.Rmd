@@ -1,5 +1,5 @@
 ---
-title: "Interactive solar and storage market data dashboards - DG+ Design"
+title: "Professional and academic data science portfolio"
 output: 
   html_document:
     theme: yeti
