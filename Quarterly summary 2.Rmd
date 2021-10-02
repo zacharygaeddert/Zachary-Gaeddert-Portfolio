@@ -37,28 +37,28 @@ library(reactable)
 ```
 
 ```{r include = FALSE}
-coned <- read.csv('raw data/ConEd2.csv') %>% 
+coned <- read.csv('raw data/NY/ConEd2.csv') %>% 
   select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
          Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
          Metering..NA...NM...RNM...CDG.) #%>% 
   #mutate(date = mdy(Application.Approved.Date...Utility.))
-nyseg <- read.csv('raw data/NYSEG2.csv') %>% 
+nyseg <- read.csv('raw data/NY/NYSEG2.csv') %>% 
   select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
          Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
          Metering..NA...NM...RNM...CDG.)
-or <- read.csv('raw data/O^0R2.csv') %>% 
+or <- read.csv('raw data/NY/O^0R2.csv') %>% 
   select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
          Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
          Metering..NA...NM...RNM...CDG.)
-nimo <- read.csv('raw data/Niagara Mohawk (NatGrid)2.csv') %>% 
+nimo <- read.csv('raw data/NY/Niagara Mohawk (NatGrid)2.csv') %>% 
   select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
          Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
          Metering..NA...NM...RNM...CDG.)
-ch <- read.csv('raw data/CH2.csv') %>% 
+ch <- read.csv('raw data/NY/CH2.csv') %>% 
   select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
          Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
          Metering..NA...NM...RNM...CDG.)
-pseg <- read.csv('raw data/PSEG2.csv') %>% 
+pseg <- read.csv('raw data/NY/PSEG2.csv') %>% 
   select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
          Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
          Metering..NA...NM...RNM...CDG.)
@@ -306,7 +306,7 @@ ny_map <- ny_2 %>%
   group_by(geoid2) %>% 
   summarise(cap = sum(capacity)/1000)
 
-nymap <- st_read('raw data/acs2019_5yr_B01003_86000US14475.shp') %>% 
+nymap <- st_read('raw data/NY/acs2019_5yr_B01003_86000US14475.shp') %>% 
   mutate(geoid2 = as.numeric(substr(geoid,8,12))) %>% 
   filter(!name == 'New York')
 
