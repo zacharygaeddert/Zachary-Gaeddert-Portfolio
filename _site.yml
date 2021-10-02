@@ -16,6 +16,6 @@ navbar:
       menu:
       - text: "Air Pollution and Covid Lockdowns"
         href: Econometrics-with-R.html
-      - text: "Air Pollution and Covid Lockdowns (with code))"
+      - text: "Air Pollution and Covid Lockdowns (with code)"
         href: Econemetrics-with-R-code.html
 output_dir: "docs"
