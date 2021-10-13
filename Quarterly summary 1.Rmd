@@ -155,6 +155,9 @@ labels <- sprintf("<strong>%s</strong><br/> Zip code: %s<br/> Capacity Q2 2021: 
 
 map_int <- leaflet(nj_int) %>% addTiles() 
 
+```
+
+```{r echo = FALSE}
 map_int %>% addPolygons(fillColor = ~pal(cap),
                         weight = 0.5,
                         opacity = 1,
