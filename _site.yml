@@ -11,7 +11,7 @@ navbar:
       - text: "New York (with code)"
         href: Quarterly-summary-2.html
       - text: "New Jersey (with code)"
-        href: Quarterly-summary-1.html
+        href: Quarterly-summary-1-code.html
     - text: "Econometrics paper"
       menu:
       - text: "Air Pollution and Covid Lockdowns"

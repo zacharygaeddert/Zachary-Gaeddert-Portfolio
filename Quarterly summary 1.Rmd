@@ -36,96 +36,51 @@ library(highcharter)
 library(reactable)
 ```
 
-
 ```{r include = FALSE}
-nj11 <- read_csv('raw data/NJ/NJ11.csv') 
-nj11 <- nj11 %>%  rename('id' = `TI Application Number`, 'program' = 'Program', 'capacity' = 'Calculated Total System Size',
-                       'segment' ='Customer Type', 'third' = 'Third Party Ownership',
-                       'contractor' = 'Contractor Company', 'utility' = 'Electric Utility Name',
-                       'zip' = `Premise                         Zip`, 'county' = `County                      Code`, 'type' = 
-                         'Interconnection', 'date' ='Acceptance Date') %>% 
-  select(id, utility, capacity, date, zip, county, segment, contractor, third, program, type)
-
-nj22 <- read_csv('raw data/NJ/NJ22.csv')
-nj22 <- nj22 %>%  rename('id' = `TI Application Number`, 'program' = 'Program', 'capacity' = 'Calculated Total System Size',
-                       'segment' ='Customer Type', 'third' = 'Third Party Ownership',
-                       'contractor' = 'Contractor Company', 'utility' = 'Electric Utility Name',
-                       'zip' = `Premise                         Zip`, 'county' = `County                      Code`, 'type' = 
-                         'Interconnection', 'date' = `Acceptance                Date`) %>% 
-  select(id, utility, capacity, date, zip, county, segment, contractor, third, program, type)
-
-nj33 <- read_csv('raw data/NJ/NJ33.csv')
-nj33 <- nj33 %>% rename('id' = `SRP Registration Number`, 'program' = 'Program', 'capacity' = 'Calculated Total System Size',
-                        'segment' ='Customer Type', 'third' = 'Third Party Ownership',
-                        'contractor' = 'Contractor Company', 'utility' = 'Electric Utility Name',
-                        'zip' = `Premise        Zip`, 'county' = `County        Code`, 'type' = 
-                          'Interconnection Type', 'date' = `Registration Acceptance Date`) %>% 
-  select(id, utility, capacity, date, zip, county, segment, contractor, third, program, type)
-
-nj44 <- read_csv('raw data/NJ/NJ44.csv')
-nj44 <- nj44 %>%  rename('id' = `TI Application Number`, 'program' = 'Program', 'capacity' = 'Calculated Total System Size',
-       'segment' ='Customer Type', 'third' = 'Third Party Ownership',
-       'contractor' = 'Contractor Company', 'utility' = 'Electric Utility Name',
-       'zip' = `Premise        Zip`, 'county' = `County        Code`, 'type' = 
-         'Interconnection Type', 'date' ='Acceptance Date') %>% 
-  select(id, utility, capacity, date, zip, county, segment, contractor, third, program, type)
-
-nj_2 <- rbind(nj11, nj22, nj33, nj44)
-nj_2 <- distinct(nj_2)
-
-rm(nj1, nj11, nj2, nj22, nj3, nj33, nj4, nj44)
-
-nj_filter <- nj_2 %>%
-  mutate(date = dmy(date), capacity = as.numeric(capacity)) %>% 
- # filter(date >= '2020-07-01') %>% 
-  filter(type != 'Grid Supply')
-
-nj_filter <- nj_filter %>% 
-#nj_new <- nj_new %>% 
-  mutate(utility = case_when(
-    str_detect(utility, regex("pse", ignore_case = TRUE)) ~ "PSEG",
-    str_detect(utility, regex("ac electric", ignore_case = T)) ~ "AC Electric",
-    str_detect(utility, regex("jcp", ignore_case = T)) ~ "JCP&L",
-    str_detect(utility, regex("rockland", ignore_case = T)) ~ 'O&R', 
-    TRUE ~ 'Other (muni/co-op)'),
-    quarter = zoo::as.yearqtr(date, format = "%Y-%m-%d"),
+nj <-   do.call(rbind,
+          lapply(list.files(path = "raw data/NJ/solar"), read.csv)) %>%
+  rename('id' = TI.Application.Number, 
+         'program' = Program, 
+         'capacity' = Calculated.Total.System.Size,
+         'segment' = Customer.Type, 
+         'third' = Third.Party.Ownership,
+         'contractor' = Contractor.Company, 
+         'utility' = Electric.Utility.Name,
+         'zip' = Premise.........................Zip, 
+         'county' = County......................Code, 
+         'type' = Interconnection, 
+         'date' = Acceptance.Date) %>% 
+  select(id, utility, capacity, date, zip, county, segment, contractor, third, program, type) %>% 
+  mutate(date = dmy(date), 
+         capacity = as.numeric(gsub(",","", capacity)),
+         quarter = zoo::as.yearqtr(date, format = "%Y-%m-%d"),
          segment_x = case_when(
            type == 'Community Solar' ~ 'Community Solar',
            segment == 'Residential' ~ 'Residential',
-           TRUE ~ 'Non-Residential'
-         ))
-```
+           TRUE ~ 'Non-Residential'),
+         utility = case_when(
+           grepl("pse", utility, ignore.case = TRUE) ~ "PSEG",
+           grepl("ac electric", utility, ignore.case = T) ~ "AC Electric",
+           grepl("jcp", utility, ignore.case = T) ~ "JCP&L",
+           grepl("rockland", utility, ignore.case = T) ~ 'O&R',
+           TRUE ~ 'Other (muni/co-op)'
+         )) %>% 
+  filter(type != 'Grid Supply') %>% 
+  distinct()
 
-```{r include = FALSE}
-nj_sum <- nj_filter %>% 
+nj_quarter <- nj %>% 
   filter(date >= '2020-07-01') %>% 
   group_by(segment_x, quarter) %>% 
   summarise(cap = sum(capacity)/1000)
 
-nj_2 <- nj_filter %>% 
+nj_seg <- nj %>% 
   filter(quarter == '2021 Q2') %>% 
   mutate(res_cap = if_else(segment_x == 'Residential', capacity, 0),
          com_cap = if_else(segment_x == 'Non-Residential', capacity, 0),
          cs_cap = if_else(segment_x == 'Community Solar', capacity, 0),
-        # month = months(as.Date(date)))
-        month = month(date))
-```
+         month = month(date))
 
-## New Jersey added **`r round(sum(nj_2$capacity)/1000,2)` MW** of new distributed solar capacity to the interconnection queue in Q2 2021
-
-```{r echo = FALSE}
-nj_sum %>%
-  hchart('column', hcaes(x = as.factor(quarter), y = round(cap,2), group = segment_x)) %>% 
-  hc_colors(c('#F37325', '#2490BD', "#47B970", '#1A2B40', '#b7b7b7', '#800000','#F8AA1A')) %>% 
-  hc_plotOptions(series = list(stacking = 'normal')) %>% 
-  hc_xAxis(title = '', labels = list(step = 1) #, minorTickInterval
-  ) %>% 
-  hc_yAxis(title = list(text = 'Quarterly capacity (MW)'), style = list(fontSize = "5.0vh"))
-       
-```
-
-```{r include = FALSE}
-nj_2_seg2 <- nj_2 %>% 
+nj_com_seg <- nj_seg %>% 
   filter(segment_x == 'Non-Residential') %>% 
   mutate(segment = as.factor(case_when(
     grepl('School', segment) ~ 'School',
@@ -139,44 +94,109 @@ nj_2_seg2 <- nj_2 %>%
   mutate(share = cap/sum(cap))
 ```
 
-## Of the **`r round(sum(nj_2$capacity[nj_2$segment_x == 'Non-Residential']/1000),2)` MW** of new capacity that was Non-Residential...
+## New Jersey added **`r round(sum(nj_seg$capacity)/1000,2)` MW** of new distributed solar capacity to the interconnection queue in Q2 2021
+
+```{r echo = FALSE}
+nj_quarter %>%
+  hchart('column', hcaes(x = as.factor(quarter), y = round(cap,2), group = segment_x)) %>% 
+  hc_colors(c('#F37325', '#2490BD', "#47B970", '#1A2B40', '#b7b7b7', '#800000','#F8AA1A')) %>% 
+  hc_plotOptions(series = list(stacking = 'normal')) %>% 
+  hc_xAxis(title = '', labels = list(step = 1) #, minorTickInterval
+  ) %>% 
+  hc_yAxis(title = list(text = 'Quarterly capacity (MW)'), style = list(fontSize = "5.0vh"))
+```
+
+## Of the **`r round(sum(nj_seg$capacity[nj_seg$segment_x == 'Non-Residential']/1000),2)` MW** of new capacity that was Non-Residential...
 
 ```{r results = 'asis', echo = FALSE}
-for (i in levels(nj_2_seg2$segment)) {
-  cat("- ", "**", round(nj_2_seg2$cap[nj_2_seg2$segment == i]/1000,2), "**", " MW was ", i, sep = "")
+for (i in levels(nj_com_seg$segment)) {
+  cat("- ", "**", round(nj_com_seg$cap[nj_com_seg$segment == i]/1000,2), "**", " MW was ", i, sep = "")
   cat("\n")
 }
 ```
 
 ```{r echo = FALSE}
-nj_2_seg2 %>% 
+nj_com_seg %>% 
   hchart('pie', hcaes(x = segment, y = round(cap/1000,2)), name = "Capacity (MW)") %>% 
   hc_colors(c( '#2490BD', '#800000', '#F37325', "#47B970", '#1A2B40', '#b7b7b7', '#F8AA1A')) 
 
 ```
 
+## Where was new capacity added in Q2 2021?
+
+```{r include = FALSE}
+nj_map <- nj_seg %>% 
+  mutate(geoid2 = as.numeric(substr(zip,1,5))) %>% 
+  filter(!geoid2 == 16807|!geoid2 == 17047) %>% 
+  group_by(geoid2) %>% 
+  summarise(cap = sum(capacity)/1000)
+
+njmap <- st_read('raw data/NJ/acs2019_5yr_B01003_86000US08403.shp') %>% 
+  mutate(geoid2 = as.numeric(substr(geoid,8,12))) %>% 
+  filter(!name == 'New Jersey',
+         !geoid2 == 10990, !geoid2 == 10969) %>% 
+  left_join(nj_map, by = 'geoid2') # join capacity data to shapefile
+
+zip <- read.csv('raw data/uszips.csv') %>% # dataset from US census bureau that matches zip codes to town names - to be used in interactive map popup
+  select(zip, city) %>% 
+  rename('geoid2' = 'zip')
+
+nj_int <- left_join(njmap, zip, by = 'geoid2') %>% 
+  mutate(cap = cap*1000,
+         cap = round(cap,0), 
+         cap2 = if_else(is.na(cap),0,cap)) 
+
+map_pal <- c('#e0f1f9', '#2490BD') 
+
+pal <- colorNumeric(palette = map_pal, domain = nj_int$cap, na.color = '#FFFFFF') # palette function for choropleth map
+labels <- sprintf("<strong>%s</strong><br/> Zip code: %s<br/> Capacity Q2 2021: %s kW",
+                  nj_int$city, paste(0, nj_int$geoid2, sep = ""), comma(nj_int$cap2)) %>% 
+  lapply(HTML) # function for popup labels
+
+map_int <- leaflet(nj_int) %>% addTiles() 
+
+map_int %>% addPolygons(fillColor = ~pal(cap),
+                        weight = 0.5,
+                        opacity = 1,
+                        color = "gray",
+                        dashArray = "3",
+                        fillOpacity = 0.7,
+                        highlightOptions = highlightOptions(color = '#2a2a2a',
+                                                            weight = 2,
+                                                            dashArray = "",
+                                                            fillOpacity = 0.7,
+                                                            bringToFront = T),
+                        label = labels,
+                        labelOptions = labelOptions(
+                          style = list("font-weight" = "normal", padding = "3px 8px"),
+                          textsize = "15px",
+                          direction = "auto",
+                          opacity = 0.75)) %>% 
+  addProviderTiles('Esri.WorldGrayCanvas')
+```
+
 ## Which utilities added the most capacity in Q2 2021?
 
 ```{r include = FALSE}
-nj_2_ut <- nj_2 %>%
+nj_utility <- nj_seg %>%
   group_by(utility) %>% 
   summarise(cap = sum(capacity))
 
-nj_2_ut2 <- nj_2 %>%
+nj_ut_month <- nj_seg %>%
   group_by(utility, month) %>% 
   summarise(cap = sum(capacity)) %>% 
     mutate(month = factor(month, levels = c(4, 5, 6), labels = c('April', 'May', 'June'))) 
 ```
 
 ```{r echo = FALSE}
-nj_2_ut %>% 
+nj_utility %>% 
   hchart('pie', hcaes(x = utility, y = round(cap/1000,2)), name = "Capacity (MW)") %>% 
   hc_colors(c('#F37325', '#2490BD', "#47B970", '#b7b7b7', '#1A2B40', '#800000','#F8AA1A')) 
 
 ```
 
 ```{r echo = FALSE}
-nj_2_ut2 %>% 
+nj_ut_month %>% 
   hchart('column', hcaes(x = month, y = round(cap/1000, 2), group = utility)) %>% 
   hc_colors(c('#F37325', '#2490BD', "#47B970", '#b7b7b7', '#1A2B40', '#800000','#F8AA1A')) %>% 
   hc_plotOptions(series = list(stacking = 'normal')) %>% 
@@ -190,7 +210,7 @@ nj_2_ut2 %>%
 ## Which developers added the most capacity in Q2 2021?
 
 ```{r include = FALSE}
-nj_2 <- nj_2 %>% 
+nj_seg <- nj_seg %>% 
   mutate(contractor = as.character(contractor)) %>% 
   mutate(dev_agg = case_when(
     grepl('tesla|solarcity|solar city', contractor, ignore.case = T) ~ 'Tesla/SolarCity',
@@ -216,7 +236,7 @@ nj_2 <- nj_2 %>%
     TRUE ~ contractor
   ))
 
-nj_2_dev <- nj_2 %>% 
+nj_dev_sum <- nj_seg %>% 
   group_by(dev_agg, segment_x) %>% 
   summarise(cap = sum(capacity),
             n = n(),
@@ -229,7 +249,7 @@ nj_2_dev <- nj_2 %>%
 ### Top 10 developers in the residential segment:
 
 ```{r echo = FALSE}
-nj_2_dev %>% filter(segment_x == 'Residential') %>%
+nj_dev_sum %>% filter(segment_x == 'Residential') %>%
   head(10) %>%
   select(dev_agg, cap, n, share) %>% 
   mutate(share = paste(round(share*100,2), "%", sep = ""),
@@ -245,7 +265,7 @@ nj_2_dev %>% filter(segment_x == 'Residential') %>%
 ### Top 10 developers in the commercial segment:
 
 ```{r echo = FALSE}
-nj_2_dev %>% filter(segment_x == 'Non-Residential') %>%
+nj_dev_sum %>% filter(segment_x == 'Non-Residential') %>%
   head(10) %>%
   select(dev_agg, cap, n, share) %>% 
   mutate(share = paste(round(share*100,2), "%", sep = ""),
@@ -260,7 +280,7 @@ nj_2_dev %>% filter(segment_x == 'Non-Residential') %>%
 ### Top 10 developers active in both segments:
 
 ```{r include = FALSE}
-nj_2_devb <- nj_2 %>% 
+nj_dev_sum2 <- nj_seg %>% 
   group_by(dev_agg) %>%
   summarise(cap = sum(capacity),
             res = sum(res_cap),
@@ -275,7 +295,7 @@ nj_2_devb <- nj_2 %>%
 ```
 
 ```{r echo = FALSE}
-nj_2_devb %>% 
+nj_dev_sum2 %>% 
   select(dev_agg, cap, res, com, mean) %>% 
   mutate(cap = format(round(as.numeric(cap), 2), big.mark = ","),
          res = format(round(as.numeric(res), 2), big.mark = ","),
@@ -288,111 +308,27 @@ nj_2_devb %>%
   kableExtra::add_header_above(c("Q2 2021" = 5))
 ```
 
-## Where was new capacity added in Q2 2021?
+## Filter data
 
 ```{r include = FALSE}
-nj_map <- nj_2 %>% 
-  mutate(geoid2 = as.numeric(substr(zip,1,5))) %>% 
-  filter(!geoid2 == 16807|!geoid2 == 17047) %>% 
-  group_by(geoid2) %>% 
-  summarise(cap = sum(capacity)/1000)
-
-njmap <- st_read('raw data/NJ/acs2019_5yr_B01003_86000US08403.shp') %>% 
-  mutate(geoid2 = as.numeric(substr(geoid,8,12))) %>% 
-  filter(!name == 'New Jersey',
-         !geoid2 == 10990, !geoid2 == 10969)
-
-nj__map <- left_join(njmap, nj_map, by = 'geoid2')
-```
-
-```{r include = FALSE}
-zip <- read.csv('raw data/uszips.csv')
-
-zip_join <- zip %>% 
-  select(zip, city) %>% 
-  rename('geoid2' = 'zip')
-
-nj_int <- left_join(nj__map, zip_join, by = 'geoid2') %>% 
-  mutate(cap = cap*1000)
-
-nj_int <- filter(nj_int, name != 'New Jersey')
-nj_int <- mutate(nj_int, cap = round(cap,0), cap2 = if_else(is.na(cap),0,cap))
-
-blue_mon <- c('#e0f1f9', '#2490BD') 
-
-pal <- colorNumeric(palette = blue_mon, domain = nj_int$cap, na.color = '#FFFFFF')
-labels <- sprintf("<strong>%s</strong><br/> Zip code: %s<br/> Capacity Q2 2021: %s kW",
-                  nj_int$city, paste(0, nj_int$geoid2, sep = ""), comma(nj_int$cap2)) %>% 
-  lapply(HTML)
-
-map_int <- leaflet(nj_int) %>% addTiles()
-```
-
-```{r echo = FALSE}
-map_int %>% addPolygons(fillColor = ~pal(cap),
-                        weight = 0.5,
-                        opacity = 1,
-                        color = "gray",
-                        dashArray = "3",
-                        fillOpacity = 0.7,
-                        highlightOptions = highlightOptions(color = '#2a2a2a',
-                                                            weight = 2,
-                                                            dashArray = "",
-                                                            fillOpacity = 0.7,
-                                                            bringToFront = T),
-                        label = labels,
-                        labelOptions = labelOptions(
-                          style = list("font-weight" = "normal", padding = "3px 8px"),
-                          textsize = "15px",
-                          direction = "auto",
-                          opacity = 0.75)) %>% 
-  addProviderTiles('Esri.WorldGrayCanvas')
-```
-
-## Filter and download data
-
-```{r include = FALSE}
-nj_2_table <- nj_2 %>% 
-  mutate(contractor = as.character(contractor)) %>% 
-  mutate(Developer = case_when(
-    grepl('tesla|solarcity|solar city', contractor, ignore.case = T) ~ 'Tesla/SolarCity',
-    grepl('vivint|sunrun|sun run', contractor, ignore.case = T) ~ 'Vivint/SunRun',
-    grepl('momentum', contractor, ignore.case = T) ~ 'Momentum Solar',
-    grepl('vision', contractor, ignore.case = T) ~ 'Vision Solar',
-    grepl('greenpower|green power', contractor, ignore.case = T) ~ 'Green Power Energy',
-    grepl('orbit', contractor, ignore.case = T) ~ 'Orbit Energy & Power',
-    grepl('sunpower|sun power', contractor, ignore.case = T) ~ 'SunPower Corporation',
-    grepl('sunnymac', contractor, ignore.case = T) ~ 'SunnyMac',
-    grepl('whitman', contractor, ignore.case = T) ~ 'Steve Whitman',
-    grepl('evergreen', contractor, ignore.case = T) ~ 'Evergreen Energy',
-    grepl('pfister', contractor, ignore.case = T) ~ 'Pfister Energy',
-    grepl('national', contractor, ignore.case = T) ~ 'National Energy Partners',
-    grepl('grid builder', contractor, ignore.case = T) ~ 'Grid Builders (owned by NextGrid)',
-    grepl('suntuity', contractor, ignore.case = T) ~ 'Suntuity Solar',
-    grepl('posigen', contractor, ignore.case = T) ~ 'Posigen NJ',
-    grepl('freedom', contractor, ignore.case = T) ~ 'Freedom Forever NJ',
-    grepl('entersolar', contractor, ignore.case = T) ~ 'EnterSolar',
-    grepl('edf', contractor, ignore.case = T) ~ 'EDF Renewables Distributed Solutions',
-    grepl('brightcore', contractor, ignore.case = T) ~ 'Brightcore',
-    grepl('cents', contractor, ignore.case = T) ~ 'Solar Cents',
-    TRUE ~ contractor
-  )) %>% 
-  select(Developer, capacity, date, utility, segment, zip) %>% 
+nj_table <- nj_seg %>% 
+  select(dev_agg, capacity, date, utility, segment, zip) %>% 
  # mutate('Number of Projects' = 1) %>% 
-  rename('Capacity' = capacity, 'Date' = date, 'Utility' = utility, 'Segment' = segment, 'Zip Code' = zip)
-
+  rename('Developer' = dev_agg,
+         'Capacity' = capacity,
+         'Date' = date,
+         'Utility' = utility,
+         'Segment' = segment,
+         'Zip Code' = zip)
 ```
 
-
 ```{r echo = FALSE}
-
-reactable(nj_2_table, filterable = TRUE,
+reactable(nj_table, filterable = TRUE,
           columns = list(Capacity = colDef(filterable = FALSE)),
           searchable = TRUE,
           showPageSizeOptions = TRUE,
           pageSizeOptions = c(5,10,20,50),
           defaultPageSize = 10)
-
 ```
 
 
