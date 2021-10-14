@@ -39,18 +39,28 @@ library(reactable)
 ```
 
 ```{r echo = TRUE, results = 'hide', warning = FALSE, message = FALSE}
+varnames <- c('Company',
+              'Developer',
+              'Application...Job..',
+              'PV..kWAC.',
+              'Metering..NA...NM...RNM...CDG.',
+              'Application.Approved.Date...Utility.',
+              'Project.Complete..Y.N.',
+              'Zip.Code')
+
+varreplace <- c('utility', 
+                'developer', 
+                'id',
+                'capacity',
+                'metering',
+                'date',
+                'complete',
+                'zip')
+
 ny <-   do.call(rbind,
-          lapply(list.files(path = "raw data/NY/solar"), read.csv)) %>% 
-  rename('utility' = 'Company',
-         'developer' = 'Developer',
-         'id' = 'Application...Job..',
-         'substation' = 'Substation', 
-         'capacity' = 'PV..kWAC.',
-         'metering' = 'Metering..NA...NM...RNM...CDG.',
-         'date' = 'Application.Approved.Date...Utility.',
-         'complete' = 'Project.Complete..Y.N.',
-         'zip' = 'Zip.Code') %>%
-  select(utility, developer, id, capacity, metering, date, complete, zip) %>% 
+          lapply(list.files(path = "raw data/NY/solar"), read.csv)) %>%
+  select(varnames) %>% 
+  rename_at(vars(varnames), ~varreplace) %>% 
   mutate(date = dmy(date),
          capacity = as.numeric(capacity),
          quarter = zoo::as.yearqtr(date, format = "%Y-%m-%d"),
@@ -66,7 +76,7 @@ ny <-   do.call(rbind,
            metering == 'CDG' ~ 'Community Solar',
            TRUE ~ 'Other')),
          segment_x = case_when(
-           metering == 'CDG' ~ 'Community Solar',
+           metering == 'Community Solar' ~ 'Community Solar',
            capacity <= 20 ~ 'Residential',
            capacity > 20 ~ 'Non-Residential'
            )) %>% 
@@ -87,7 +97,7 @@ ny_seg <- ny %>%
         month = month(date))
 ```
 
-## New York added **`r round(sum(ny_seg$capacity)/1000,2)` MW** of new distributed solar capacity to the interconnection queue in Q2 2021
+## New York added **round(sum(ny_seg$capacity)/1000,2) MW** of new distributed solar capacity to the interconnection queue in Q2 2021
 
 ```{r}
 ny_quarter %>%
@@ -100,7 +110,7 @@ ny_quarter %>%
        
 ```
 
-## Of this **`r round(sum(ny_seg$capacity/1000),2)` MW** of new capacity...
+## Of this **round(sum(ny_seg$capacity/1000),2) MW** of new capacity...
 
 ```{r results = 'asis'}
 ny_meter <- ny %>% 
@@ -142,8 +152,7 @@ zip <- read.csv('raw data/uszips.csv') %>%
   rename('geoid2' = 'zip')
 
 ny_int <- left_join(nymap, zip, by = 'geoid2') %>% 
-  mutate(cap = cap*1000,
-         cap = round(cap,0), 
+  mutate(cap = round(cap*1000,0),
          cap2 = if_else(is.na(cap),0,cap))
 
 map_pal <- c('#e0f1f9', '#2490BD') 
@@ -179,29 +188,22 @@ map_int %>% addPolygons(fillColor = ~pal(cap),
 
 ## Which utilities added the most capacity in Q2 2021?
 
-```{r echo = TRUE, results = 'hide', warning = FALSE, message = FALSE}
-ny_2_ut <- ny %>%
-  group_by(utility) %>% 
-  summarise(cap = sum(capacity))
-
-ny_2_ut2 <- ny %>%
-  mutate(month = month(date)) %>% 
-  group_by(utility, month) %>% 
-  summarise(cap = sum(capacity)) %>% 
-  mutate(month = factor(month, levels = c(4, 5, 6), labels = c('April', 'May', 'June')))
-```
-
 ```{r}
-ny_2_ut %>% 
-  hchart('pie', hcaes(x = utility, y = round(cap/1000,2)), name = "Capacity (MW)") %>% 
+ny %>%
+  group_by(utility) %>% 
+  summarise(cap = sum(capacity)) %>% 
+  hchart('pie', hcaes(x = utility, y = cap), name = "Capacity (MW)") %>% 
   hc_colors(c('#F37325', '#2490BD', "#47B970", '#b7b7b7', '#1A2B40', '#800000','#F8AA1A')) 
 
 ```
 
 ```{r}
-ny_2_ut2 %>% 
-#  mutate(month = factor(month, levels = c('April', 'May', 'June'), labels = c('April', 'May', #'June'))) %>% 
-  hchart('column', hcaes(x = month, y = round(cap/1000, 2), group = utility)) %>% 
+ny %>%
+  filter(quarter == '2021 Q2') %>% 
+  mutate(month = factor(month(date), levels = c(4, 5, 6), labels = c('April', 'May', 'June'))) %>% 
+  group_by(utility, month) %>% 
+  summarise(cap = sum(capacity)) %>% 
+  hchart('column', hcaes(x = month, y = cap, group = utility)) %>% 
   hc_colors(c('#F37325', '#2490BD', "#47B970", '#b7b7b7', '#1A2B40', '#800000','#F8AA1A')) %>% 
   hc_plotOptions(series = list(stacking = 'normal')) %>% 
   hc_xAxis(title = '', labels = list(step = 1) #, minorTickInterval
@@ -341,14 +343,11 @@ ny_table <- ny %>%
          'Zip Code' = zip)
 ```
 
-
 ```{r}
-
 reactable(ny_table, filterable = TRUE,
           columns = list(Capacity = colDef(filterable = FALSE)),
           searchable = TRUE,
           showPageSizeOptions = TRUE,
           pageSizeOptions = c(5,10,20,50),
           defaultPageSize = 10)
-
 ```

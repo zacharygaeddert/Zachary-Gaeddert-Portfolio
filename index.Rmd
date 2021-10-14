@@ -23,7 +23,7 @@ output:
 
 This website is a portfolio of the skills I have developed in data science, data visualization, and econometrics whilst pursing my Master's of Public Administration (MPA) in energy policy and data analytics at Columbia University.
 
-*description of solar data*
+*description of solar data - interactive charts AND MAPS*
 
 *description of econometrics paper*
 

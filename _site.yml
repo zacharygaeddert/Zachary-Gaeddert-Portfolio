@@ -13,9 +13,5 @@ navbar:
       - text: "New Jersey (with code)"
         href: Quarterly-summary-1-code.html
     - text: "Econometrics paper"
-      menu:
-      - text: "Air Pollution and Covid Lockdowns"
-        href: Econometrics-with-R.html
-      - text: "Air Pollution and Covid Lockdowns (with code)"
-        href: Econemetrics-with-R-code.html
+      href: Econometrics-with-R.pdf
 output_dir: "docs"

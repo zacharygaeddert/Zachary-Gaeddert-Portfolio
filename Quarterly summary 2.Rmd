@@ -37,18 +37,28 @@ library(reactable)
 ```
 
 ```{r include = FALSE}
+varnames <- c('Company',
+              'Developer',
+              'Application...Job..',
+              'PV..kWAC.',
+              'Metering..NA...NM...RNM...CDG.',
+              'Application.Approved.Date...Utility.',
+              'Project.Complete..Y.N.',
+              'Zip.Code')
+
+varreplace <- c('utility', 
+                'developer', 
+                'id',
+                'capacity',
+                'metering',
+                'date',
+                'complete',
+                'zip')
+
 ny <-   do.call(rbind,
-          lapply(list.files(path = "raw data/NY/solar"), read.csv)) %>% 
-  rename('utility' = 'Company',
-         'developer' = 'Developer',
-         'id' = 'Application...Job..',
-         'substation' = 'Substation', 
-         'capacity' = 'PV..kWAC.',
-         'metering' = 'Metering..NA...NM...RNM...CDG.',
-         'date' = 'Application.Approved.Date...Utility.',
-         'complete' = 'Project.Complete..Y.N.',
-         'zip' = 'Zip.Code') %>%
-  select(utility, developer, id, capacity, metering, date, complete, zip) %>% 
+          lapply(list.files(path = "raw data/NY/solar"), read.csv)) %>%
+  select(varnames) %>% 
+  rename_at(vars(varnames), ~varreplace) %>% 
   mutate(date = dmy(date),
          capacity = as.numeric(capacity),
          quarter = zoo::as.yearqtr(date, format = "%Y-%m-%d"),

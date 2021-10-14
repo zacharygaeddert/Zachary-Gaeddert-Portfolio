@@ -37,20 +37,34 @@ library(reactable)
 ```
 
 ```{r echo = TRUE, results = 'hide', warning = FALSE, message = FALSE}
+varnames <- c('TI.Application.Number',
+              'Program',
+              'Calculated.Total.System.Size',
+              'Customer.Type',
+              'Third.Party.Ownership',
+              'Contractor.Company',
+              'Electric.Utility.Name',
+              'Premise.........................Zip',
+              'County......................Code',
+              'Interconnection',
+              'Acceptance.Date')
+
+varreplace <- c('id', 
+                'program', 
+                'capacity',
+                'segment', 
+                'third',
+                'contractor', 
+                'utility',
+                'zip', 
+                'county', 
+                'type', 
+                'date')
+
 nj <-   do.call(rbind,
           lapply(list.files(path = "raw data/NJ/solar"), read.csv)) %>%
-  rename('id' = TI.Application.Number, 
-         'program' = Program, 
-         'capacity' = Calculated.Total.System.Size,
-         'segment' = Customer.Type, 
-         'third' = Third.Party.Ownership,
-         'contractor' = Contractor.Company, 
-         'utility' = Electric.Utility.Name,
-         'zip' = Premise.........................Zip, 
-         'county' = County......................Code, 
-         'type' = Interconnection, 
-         'date' = Acceptance.Date) %>% 
-  select(id, utility, capacity, date, zip, county, segment, contractor, third, program, type) %>% 
+  select(varnames) %>% 
+  rename_at(vars(varnames), ~varreplace) %>%  
   mutate(date = dmy(date), 
          capacity = as.numeric(gsub(",","", capacity)),
          quarter = zoo::as.yearqtr(date, format = "%Y-%m-%d"),
@@ -142,8 +156,7 @@ zip <- read.csv('raw data/uszips.csv') %>% # dataset from US census bureau that 
   rename('geoid2' = 'zip')
 
 nj_int <- left_join(njmap, zip, by = 'geoid2') %>% 
-  mutate(cap = cap*1000,
-         cap = round(cap,0), 
+  mutate(cap = round(cap*1000,0),
          cap2 = if_else(is.na(cap),0,cap)) 
 
 map_pal <- c('#e0f1f9', '#2490BD') 

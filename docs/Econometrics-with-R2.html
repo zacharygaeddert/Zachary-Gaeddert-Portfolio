@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Zachary Gaeddert (zdg2105)" />
+
+
+<title>Did COVID-19 lockdowns truly improve air quality in urban areas?</title>
+
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Distributed solar market data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Quarterly-summary-2.html">New York</a>
+    </li>
+    <li>
+      <a href="Quarterly-summary-1.html">New Jersey</a>
+    </li>
+    <li>
+      <a href="Quarterly-summary-2-code.html">New York (with code)</a>
+    </li>
+    <li>
+      <a href="Quarterly-summary-1-code.html">New Jersey (with code)</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Econometrics-with-R.pdf">Econometrics paper</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Did COVID-19 lockdowns truly improve air quality in urban areas?</h1>
+<h4 class="author">Zachary Gaeddert (zdg2105)</h4>
+<h4 class="date">April 20, 2021’</h4>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>1. Introduction</h1>
+<p>Outdoor air pollution is a global health crisis. Sustained exposure to high levels of pollutants such as nitrogen dioxide (NO<sub>2</sub>), particulate matter (PM), and sulfur dioxide (SO<sub>2</sub>) can lead to severe acute and chronic health conditions, including stroke, heart disease, lung cancer, and respiratory illnesses such as asthma. According to the World Health Organization (WHO), ambient outdoor air quality contributes to 4.2 million deaths per year around the world.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Most air pollutants are predominantly anthropogenic (man-made), deriving from the combustion of fossil fuels for power generation, transportation, industrial processes, or heat in buildings. Therefore, air quality in urban areas, with dense populations and concentrated human activities, is particularly important to public health.</p>
+<p>This paper will explore the causal drivers behind the significant improvements in air quality observed in US urban areas in the first half of 2020. Conventional wisdom would suggest that state governments’ policy response to the pandemic in the form of <em>statewide lockdowns</em> forced people to stay home, thereby reducing traffic on the road and urban tailpipe emissions. However, data suggest that both average daily urban air pollution as well as traffic - measured in daily miles traveled per capita as a proxy - began declining well before the implementation of state lockdowns, calling into question the causal relationship between the policy and the outcome. Understanding the influence of public policy on human behavior - behavior that is directly linked with anthropogenic air pollution emissions - is key to public health outcomes. This paper will therefore conclude with a discussion surrounding the implications of such findings for policy and public health, namely the quantifiable benefits of abating urban emissions with low-carbon and energy-efficient technologies, the potential benefits of modal transport shifts and reducing travel in the near term, and the distributional impacts on different demographic groups.</p>
+</div>
+<div id="data-description" class="section level1">
+<h1>2. Data description</h1>
+<p>This study draws data from three primary sources: 1) air quality data from <strong>The US Environmental Protection Agency (EPA)</strong><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>, 2) demographic data from <strong>The US Census Bureau</strong><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>, and 3) mobility data from <strong>The University of Maryland’s COVID-19 Impact Analysis Platform</strong><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> <a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>:</p>
+</div>
+<ul>
+<li><strong>Air quality</strong>: The unit of measurement for air quality data is daily <em>air quality index (AQI)</em> for the criteria pollutant <em>nitrogen dioxide (NO<sub>2</sub>)</em> at EPA air quality (AQ) monitors. AQI is a standardized, public-facing measurement of air pollution levels that is directly proportional to pollution concentrations (measured in ‘parts per billion’, or ‘ppb’, for NO<sub>2</sub>). AQI ‘level of concern’ increases at every interval of 50, with ‘green’ (0-50) representing little to no pollution, and ‘red’ (151-200) representing elevated health risks. NO<sub>2</sub> was chosen owing to its close link to to fuel combustion for transport, although further study should include analysis of other major criteria pollutants, including PM, SO<sub>2</sub>, and ozone (O<sub>3</sub>). Data is collected daily between 2017 and 2020, and further split into two groups: averages at a given monitor on a given day of the year for 2017-2019, and 2020 observations.
+</div></li>
+<li><strong>Demographic data</strong>: variables are collected at the census tract level, and include median income, racial makeup, educational attainment, population density, census tract area, and share of urban residents. Data is collected solely for 2019 (the most recent year available) and applied to both the 2017-19 baseline and the 2020 AQ observations above.
+</div></li>
+<li><strong>Mobility</strong>: The COVID-19 Impact Analysis Platform aggregates data from individual mobile users to track both daily <em>trips per person</em> and <em>miles traveled per person</em> at the county level. Importantly, this data does not distinguish modes of transport per trip; evidently, if individuals made modal transport shifts in response to the pandemic (i.e. increased frequency of trips on foot to essential businesses within one’s vicinity), this would be poorly reflected in the ‘trips per person’ metric. This paper therefore utilizes <em>‘miles per person’</em> as a covariate for air quality which, although imperfect, should better isolate rates of vehicular travel.</li>
+</ul>
+<p>A daily panel data set was formed by geocoding the latitude and longitude of EPA AQ monitors to attain the ID of the census tract in which they are located, and then joining demographic data based on that tract ID. Monitors are then filtered to urban monitors (urban share of population is 100% and census tract area is less than 2 sq. mi.) to ensure representativeness of air quality observations of an entire tract with a given monitor. Mobility data was then joined at the county level (i.e. each tract in the same county has the same mobility observations, as further disaggregated data is not available).</p>
+In total, data from **
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["n_distinct(p)"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"206"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+** monitors in **
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["n_distinct(tractid)"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"204"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+** tracts are anlayzed. Monitors in each state are not evenly distributed, with California taking up about one third of total number of monitors available. **
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["n_distinct(tractid[majpoc == 1])"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"73"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+** of **
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["n_distinct(tractid)"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"187"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>** tracts have a majority non-white population. The medium income of census tracts varies widely, from <strong>9,191</strong> to <strong>189,583 US dollars per year</strong>.</p>
+<div id="data-limitations" class="section level2">
+<h2>Data limitations</h2>
+</div>
+<ul>
+<li><strong>Non-randomness in treatment and control group observations</strong>: Because ‘treatment’ (2020) and ‘control’ (2017-19) observations are observed chronologically, they are inherently not random. Although the use of multiple ‘control’ years perhaps provides a more robust basline, it is feasible that factors that influence air quality but are not related to lockdowns (e.g. weather, climate change) could have been different in 2020 relative to baseline years. This analysis could be strengthened with a <em>difference in means</em> test of such factors across multiple years; as an example, if average <em>heating degree days</em> were lower in 2020 relative to baseline years, NO<sub>2</sub> pollution levels would likely be lower irrespective of any policy intervention.
+</div></li>
+<li><strong>Lockdowns</strong>: ‘Lockdowns’ is a broad, catch-all term for state-level policies that differed in both stringency of measure and stringency of enforcement, factors for which the authors deemed infeasible to control. Moreover, lockdowns are also inherently not random, but a response to other <em>omitted variables</em> that may have influenced air quality, such as COVID-19 case load (further discussed in section 5).
+</div></li>
+<li><strong>Mobility</strong>: Per-capita mobility data are not weighted by county population, as these figures were not reasonably available to the authors of this paper, and thus may underrepresent changes in mobility in extremely populous counties, such as Los Angeles or Cook.</li>
+</ul>
+</div>
+</div>
+<div id="descriptive-statistics" class="section level1">
+<h1>3. Descriptive statistics</h1>
+<p>Prior to an analysis of the distributional impacts of air quality improvements in 2020, it is imperative to establish whether COVID-19 lockdowns did, in fact, reduce air pollution levels. We first examine average daily NO<sub>2</sub> pollution levels in urban areas relative to a 2017-19 baseline on the same day of the year. Figure 1 shows that average urban air pollution levels drop well below the previous years’ baseline at the onset of the pandemic and into the summer, consistent with most literature. Interestingly, however, average AQI in 2020 begins to drop well below the baseline as early as late February. This seems counterintuitive to the idea that stay-at-home mandates caused the drop in NO<sub>2</sub> pollution, as the first statewide lockdown was announced on the <span class="math inline">\(19^{th}\)</span> of March, when average NO<sub>2</sub> AQI readings were already a whopping 42.21% below the 2017-19 baseline.</p>
+<p><img src="figs/unnamed-chunk-3.png" width="672" /></p>
+<p>To better understand the relationship between lockdown orders and air quality, we now index our daily air quality observations relative to the date that the state in which a given monitor is located announced their first lockdown order (this approach is further explaind in section 5). If COVID-19 lockdowns truly are the causal driver behind decreased air pollution emissions, one would expect to observe a deviation from previous years’ baselines at around day 0. However, as can be seen in figure 2, average AQI readings at day 0 - the day states implemented their lockdowns in spring 2020 - are already 25.43% below levels on that same day for 2017-19.</p>
+<p><img src="figs/unnamed-chunk-5.png" width="672" /></p>
+<p>It is clear that air quality improved significantly in 2020; what is less clear, however, is the causal role that lockdowns played in these improvements. Section 5 will employ econometric methods to test the causal relationship between lockdowns and AQI.</p>
+</div>
+<div id="model-and-analysis" class="section level1">
+<h1>4. Model and Analysis</h1>
+<div id="did-covid-19-lockdowns-really-improve-air-quality" class="section level2">
+<h2>Did COVID-19 lockdowns really improve air quality?</h2>
+<p>Our analysis will attempt to demonstrate that there is a statistically significant <strong>difference in differences</strong> in average AQI observations in 2020 following the implementation of lockdowns relative to the same time period in baseline years (2017-19). The use of a difference-in-differences approach against a baseline (control) group is a result of the seasonality of NO<sub>2</sub> pollution levels - NO<sub>2</sub> pollution has regular, predictable winter peaks and summer troughs, largely due to increased fuel consumption for building heat in the winter. It would therefore be inaccurate to look at solely the difference in air quality before and after the lockdowns in 2020, since NO<sub>2</sub> pollution would be expected to decrease after lockdown orders in March and April regardless of any policy intervention.</p>
+<p>Our model is therefore assessing the difference in AQI observations among urban air quality monitors, our <em>unit of observation</em>, before and after the implementation of a <em>policy</em> (lockdown) in our <em>treatment</em> (2020) and <em>control</em> (average AQI observation between 2017-19 at a given monitor on a given day of the year) groups:</p>
+<p><span class="math display">\[ AQI_{it} = \beta_0 + \beta_1 treat_{i} + \beta_2 lockdown_{t} + \beta_3 treat*lockdown_{it} + \alpha_i + \gamma_t + \mu_{it} \]</span></p>
+where:
+</div>
+<ul>
+<li><span class="math inline">\({i}\)</span> represents an urban air quality monitor;
+</div></li>
+<li><span class="math inline">\({t}\)</span> represents a day relative to the day of the year that a state implemented its first lockdown (with a range of <span class="math inline">\(\pm\)</span> 60 days for each state);
+</div></li>
+<li><span class="math inline">\(treat\)</span> is a dummy variable taking 1 if the observation is from the treatment group (i.e. occurs in 2020);
+</div></li>
+<li><span class="math inline">\(lockdown\)</span> is a dummy variable taking 1 if the observation occurs on a day of the year after the a given state implemented a lockdown, and before that state lifted their lockdown order if such date falls within the 60-day period;
+</div></li>
+<li><span class="math inline">\(\alpha\)</span> represents entity fixed effects at the monitor level;
+</div></li>
+<li><span class="math inline">\(\gamma\)</span> represents day fixed effects, which holds constant factors that are fixed across entities but vary over time, namely changing demand for heating by season.
+</div></li>
+</ul>
+Prior to proceeding, it is important to mention two key aspects of our model approach:
+</div>
+<ul>
+<li><strong>Event study:</strong> Our model observes <span class="math inline">\(AQI\)</span> measurements of urban AQ monitors <span class="math inline">\({i}\)</span> on days relative to a state’s first lockdown order <span class="math inline">\({t}\)</span>. Because we have adopted an <em>event study</em> approach across multiple states in which the “event” did not occur on the same day of the year, the time dimension of our model, <span class="math inline">\({t}\)</span>, does not represent like days of the year within our treatment and control groups. For example, the observation <span class="math inline">\(t = -1\)</span> for a monitor in the state of Virginia will represent the <span class="math inline">\(28^{th}\)</span> of March in both the treatment and control groups, but will represent the <span class="math inline">\(1^{st}\)</span> of April for a monitor in Florida. We are therefore comparing an average value of NO<sub>2</sub> pollution for different days of the year <em>within</em> the treatment and control group, but for the same day of the year <em>between</em> the treatment and control groups for each monitor.
+</div></li>
+<li><strong>Multiple time dimensions:</strong> Naturally, the use of baseline years to control for the seasonality of NO<sub>2</sub> pollution means that our treatment and control groups are observed as chronological years, rather than simultaneously. The model treats the treatment and control groups as time-invariant entities, with the “time” aspect of the panel data set being days relative to lockdown, as per above.</li>
+</ul>
+<p>Table 1 shows the results of our regression analysis. The coefficient <span class="math inline">\(post*treat\)</span> is interpreted as, on average, the drop in air quality readings in 2020 after the implementation of statewide lockdowns is 2.2 points greater than the drop between the pre- and post-lockdown periods on the same days in 2017-19. The coefficient is highly statistically significant, which in itself is not surprising - it conceptually represents the difference in area between the red and blue lines on either side of the vertical black line in figure 2, between which one can see a significant difference even with the naked eye.</p>
+<p>Nevertheless, as we observe air quality improving well before the implementation of lockdowns, the authors posit that there may be a significant <em>omitted varible</em> problem in this analysis for two key reasons. On one hand, decreased tailpipe emissions (from people staying home) is just one of a plethora of potential sources of air quality improvements. Fuel combustion from power generation, industrial processes, and building heating all contribute to urban air pollution. The onset of the pandemic may have caused both a) an economic slowdown, which decreased industrial activity and commercial demand for power, as well as b) the government to implement lockdowns in response. This would <strong>overstate</strong> the effect of lockdowns on air quality.</p>
+<p>On the other hand, even if improved air quality is a result of individuals staying home, it is entirely possible that they began to do so before a policy intervention out of concern for public health, anxiety surrounding the spread of a deadly virus, or even involuntarily as instructed by their employer. This is the key issue surrounding the above-mentioned <em>lack of randomness</em> surrounding lockdowns - if lockdowns are reactive to an omitted variable, and said omitted variable is simultaneously causing people to stay home (and thus improve air quality), this would cast significant doubt on the validity of the above regression analysis. The subsequent section will explore alternative explanations for the observed decrease in air pollution levels.</p>
+</div>
+<div id="air-quality-mobility-and-lockdowns" class="section level2">
+<h2>Air quality, mobility, and lockdowns</h2>
+<p>As mentioned above, intuition would suggest that a policy intervention (COVID-19 lockdowns) led to a drop in air pollution owing largely to decreased tailpipe emissions from fewer people on the road. However, as demonstrated above, air quality began to drop below the previous years’ baseline well before lockdowns came into place. It is therefore worth a more in-depth assessment of the relationship between <em>individual mobility</em> and air quality, as well as the impact of stay-at-home orders on both. If individuals began to stay home prior to the implementation of state lockdown orders, then this could perhaps better explain the causal mechanisms driving the above-mentioned improvements in air quality in spring 2020, with the policy intervention having less impact on individual behavior (and thus air pollution).</p>
+<p>Figure 3 charts miles traveled per person in 2020 at the county level for the four most populous states in the US (mobility data is not available prior to 2020, preventing a baseline mobility comparison). Interestingly, despite statewide lockdown announcements occuring across a range of nearly two weeks (the <span class="math inline">\(19^{th}\)</span> of March, the <span class="math inline">\(2^{nd}\)</span> of April, the <span class="math inline">\(20^{th}\)</span> of March, and the <span class="math inline">\(2^{nd}\)</span> of April for California, Florida, New York, and Texas, respectively) - indicated by the vertical <em>gray</em> line - all four states seemed to experience a noticeable drop-off in miles traveled per person towards the beginning of the third week of March 2020 (Monday the 15th), indicated by the vertical <em>black</em> line (the actual decline began before this, as demonstrated in figure 4).</p>
+<p><img src="figs/unnamed-chunk-11.png" width="672" /></p>
+<p>Figure 4 now maps average daily miles traveled per person at the state level alongside 2020 average AQI, with the 2017-19 baseline included for benchmarking purposes. Interestingly, with the possible exception of Florida, all states’ air pollution levels appear to deviate below the baseline at nearly the same time that miles per person begins to drop (indicated by the vertical <em>black</em> line). More tellingly, however, all states exhibit both a) substantial decreases in miles per person traveled, and b) NO<sub>2</sub> pollution levels significantly below the previous years’ baselines (again with the possible exception of Florida for the latter) <em>well before</em> the implementation of their lockdowns (indicated by the vertical <em>gray</em> line).</p>
+<p><img src="figs/unnamed-chunk-13.png" width="672" /></p>
+This analysis confirms our above suspicions that an omitted variable, likely the growing severity of the public health crisis, altered individual behavior and economic activity prior to the implementation of statewide lockdowns, leading to air quality improvements in 2020. Moving forward, the authors would recommend two further points of study to better understand the causal drivers behind decreases in air quality in 2020:
+<div>
+<ul>
+<li>A more robust understanding of what causes the changes in mobility, if not lockdowns, and thus decreases in air pollution levels in 2020 (e.g. a COVID-19 case threshold);
+<div></li>
+<li>where possible, the collection of usable mobility data for previous years (at a minimum, at the state level) that would allow researches to employ similar econometric methods to assess the interaction between mobility and air quality in our treatment and control groups.</li>
+</ul>
+<div id="discussion-policy-implications-of-findings" class="section level1">
+<h1>5. Discussion: Policy implications of findings</h1>
+<p>The authors posit three primary implications of our analysis on the causal drivers behind improved urban air quality in 2020:</p>
+</div>
+</div>
+<ul>
+<li><strong>The impetus of decarbonization for public health</strong>: Regardless of causality, it is apparent that the COVID-19 pandemic decreased fossil-fuel combustion across economic sectors, leading to tangible improvements in air quality. With adequate policy support and political will, the same outcome could be achieved through fuel-switching to low-carbon, energy-efficient technologies, rather than decreasing individual mobility and industrial activity. This goes beyond simply electrifying urban transport fleets: modal transport shifts (e.g. increased use of buses or urban rail transit), electric heat pumps for building heat, and the elimination of fossil-based electric generation all play a role.
+</div></li>
+<li><strong>The role of policy in mobility changes</strong>: In the near-term absence of ubiquitous low-carbon transport, a better understanding of policy impacts on urban mobility rates can facilitate air quality improvements. While it is clear that statewide lockdowns were not the primary driver behind changes in mobility, it was also made clear in 2020 that many professionals can continue to be economically productive from home. Policies that incentivize companies to implement work-from-home schemes, for example, could decrease air pollution as well as other externalities (e.g. traffic) by decreasing daily miles traveled per person.
+</div></li>
+<li><strong>The importance of understanding the distributional impacts of air quality improvements</strong>: Inequality in urban air pollution is rife. While air quality improvements may have disproportionately advantaged highly polluted urban areas, where disadvantaged communities overwhelmingly live, it is also possible that such communities were again “left behind” by improvements due to other structural factors. The authors of this paper plan to engage in further analysis on the varying impacts of air quality changes on demographic groups during the COVID-19 Pandemic.</li>
+</ul>
+</div>
+</div>
+<div id="conclusion-summary-of-key-findings" class="section level1">
+<h1>7. Conclusion: Summary of key findings</h1>
+<div style="page-break-after: always;"></div>
+</div>
+<div id="references" class="section level1">
+<h1>8. References</h1>
+<p>[1] Health topics: Air pollution, <em>World Health Organization</em>, accessed on April 20, 2021 at <a href="https://www.who.int/health-topics/air-pollution">https://www.who.int/health-topics/air-pollution.</a></p>
+<p>[2] Annual Data Summary, <em>The US Environmental Protection Agency (EPA)</em>, November 24, 2020, <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta">https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta.</a></p>
+<p>[3] Maps and Visualizations, <em>United States Census Bureau</em>, accessed on April 20, 2021 at <a href="https://data.census.gov/cedsci/">https://data.census.gov/cedsci/.</a></p>
+<p>[4] University of Maryland COVID-19 Impact Analysis Platform, <em>Maryland Transportation Institute (2020)</em>,University of Maryland, College Park, USA., accessed on April 20, 2021 at <a href="https://data.covid.umd.edu">https://data.covid.umd.edu.</a></p>
+<p>[5] Zhang L, Ghader S, Pack M, Darzi A, Xiong C, Yang M, Sun Q, Kabiri A, Hu S. (2020). An interactive COVID-19 mobility impact and social distancing analysis platform. medRxiv 2020. DOI: <a href="https://doi.org/10.1101/2020.04.29.20085472">https://doi.org/10.1101/2020.04.29.20085472.</a> (preprint).</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Health topics: Air pollution, <em>World Health Organization</em>, accessed on April 20, 2021 at <a href="https://www.who.int/health-topics/air-pollution">https://www.who.int/health-topics/air-pollution.</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Annual Data Summary, <em>The US Environmental Protection Agency (EPA)</em>, November 24, 2020, <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta">https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta.</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Maps and Visualizations, <em>United States Census Bureau</em>, accessed on April 20, 2021 at <a href="https://data.census.gov/cedsci/">https://data.census.gov/cedsci/.</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>University of Maryland COVID-19 Impact Analysis Platform, <em>Maryland Transportation Institute (2020)</em>,University of Maryland, College Park, USA., accessed on April 20, 2021 at <a href="https://data.covid.umd.edu">https://data.covid.umd.edu.</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>Zhang L, Ghader S, Pack M, Darzi A, Xiong C, Yang M, Sun Q, Kabiri A, Hu S. (2020). An interactive COVID-19 mobility impact and social distancing analysis platform. medRxiv 2020. DOI: <a href="https://doi.org/10.1101/2020.04.29.20085472">https://doi.org/10.1101/2020.04.29.20085472.</a> (preprint).<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
