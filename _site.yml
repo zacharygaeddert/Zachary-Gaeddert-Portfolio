@@ -9,7 +9,7 @@ navbar:
       - text: "New Jersey"
         href: Quarterly-summary-1.html
       - text: "New York (with code)"
-        href: Quarterly-summary-2.html
+        href: Quarterly-summary-2-code.html
       - text: "New Jersey (with code)"
         href: Quarterly-summary-1-code.html
     - text: "Econometrics paper"
