@@ -1,9 +1,7 @@
 name: "Professional and academic data science portfolio"
 navbar:
-  title: "Professional and academic data science portfolio"
+  title: "Home"
   left:
-    - text: "Home"
-      href: index.html
     - text: "Distributed solar market data"
       menu:
       - text: "New York"

@@ -21,7 +21,11 @@ output:
 
 # **Professional and academic data science portfolio**
 
-Our interactive solar and storage market dashboards offer you virtually real-time updates on the latest market developments. See breakdowns of new behind-the-meter solar capacity by segment, developer, utility, and geography.
+This website is a portfolio of the skills I have developed in data science, data visualization, and econometrics whilst pursing my Master's of Public Administration (MPA) in energy policy and data analytics at Columbia University.
+
+*description of solar data*
+
+*description of econometrics paper*
 
 ## Data sources
 
@@ -29,20 +33,29 @@ Our interactive solar and storage market dashboards offer you virtually real-tim
 
 2. New Jersey: New Jersey's Clean Energy Program [Solar Activity Reports](https://njcleanenergy.com/renewable-energy/project-activity-reports/project-activity-reports)
 
+3. Air quality (to be updated)
+
+4. Mobility (to be updated)
+
 
 </div>
 <div class="col-sm-6">
 
-### [DG+ Design: Growing clean energy and sustainable brands](https://www.dgplusdesign.com/)
+<center>
 
-![](images/logo_2.png)
+![](images/sipa.jpg){width=50%}
 
-DG+Design is a marketing and creative agency with a focus on clean energy and sustainable brands. Our work is founded on the passion to uniquely combine clean energy expertise, creative skill, and marketing strategy to provide unrivaled value.
+</center>
 
-750 N San Vicente Blvd.Suite 800 West
-West Hollywood, CA 90069
+## About me
 
-hello@dgplusdesign.com
+I have four years of professional experience in energy and decarbonization policy. While the bulk of my work has surrounded market and policy frameworks to facilitate deployment of low-carbon and energy-efficient heating and cooling technologies, I have also contributed extensively to projects concerning the role of policy in abating urban transport emissions, strategies to reduce carbon leakage in the EU ETS, and the potential for distributed renewables to facilitate energy access in off-grid areas. My research pertaining to energy and development has been published by the [International Renewable Energy Agency](https://www.irena.org/publications/2020/Nov/Renewable-Energy-Policies-in-a-Time-of-Transition-Heating-and-Cooling), [World Wildlife Foundation](https://www.vivideconomics.com/wp-content/uploads/2019/10/WWF_Report_VIVID_Climate_2019_web.pdf), and [Inter-American Development Bank](http://www.itc.gov.bz/uploads/1/2/7/5/12751065/regional_economic_development_master_plan_for_corozal____action_plan_final.pdf), and will also contribute significantly to the development of NYSERDA’s forthcoming Building Electrification Roadmap, a component of $230m [NYS Clean Heat Market Development Plan](https://www.energy.gov/sites/prod/files/2020/12/f81/bto-2020-peer-preview-nyserda-electrification.pdf).
+
+zdg2105@columbia.edu
+
++1 470-622-4978
+
+[LinkedIn](https://www.linkedin.com/in/zachary-gaeddert-7584b26a/)
 
 </a>
 </div>

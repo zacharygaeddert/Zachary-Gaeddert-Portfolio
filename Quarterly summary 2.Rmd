@@ -37,61 +37,46 @@ library(reactable)
 ```
 
 ```{r include = FALSE}
-coned <- read.csv('raw data/NY/ConEd2.csv') %>% 
-  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
-         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
-         Metering..NA...NM...RNM...CDG.) #%>% 
-  #mutate(date = mdy(Application.Approved.Date...Utility.))
-nyseg <- read.csv('raw data/NY/NYSEG2.csv') %>% 
-  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
-         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
-         Metering..NA...NM...RNM...CDG.)
-or <- read.csv('raw data/NY/O^0R2.csv') %>% 
-  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
-         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
-         Metering..NA...NM...RNM...CDG.)
-nimo <- read.csv('raw data/NY/Niagara Mohawk (NatGrid)2.csv') %>% 
-  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
-         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
-         Metering..NA...NM...RNM...CDG.)
-ch <- read.csv('raw data/NY/CH2.csv') %>% 
-  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
-         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
-         Metering..NA...NM...RNM...CDG.)
-pseg <- read.csv('raw data/NY/PSEG2.csv') %>% 
-  select(Company, Developer, Application...Job.., Substation, PV..kWAC.,
-         Application.Approved.Date...Utility., Project.Complete..Y.N., Zip.Code,
-         Metering..NA...NM...RNM...CDG.)
-
-ny2 <- rbind(coned, nimo, nyseg, or, ch, pseg)
-
-rm(coned, nimo, nyseg, or, ch, pseg)
-
-ny_clean2 <- ny2 %>% 
-  rename('utility' = 'Company', 'developer' = 'Developer', 'id' = 'Application...Job..',
-         'substation' = 'Substation', 'capacity' = 'PV..kWAC.', 'date' = 'Application.Approved.Date...Utility.',
-         'complete' = 'Project.Complete..Y.N.', 'zip' = 'Zip.Code') %>% 
-  #filter(!is.na(Metering..NA...NM...RNM...CDG.)) %>% 
+ny <-   do.call(rbind,
+          lapply(list.files(path = "raw data/NY/solar"), read.csv)) %>% 
+  rename('utility' = 'Company',
+         'developer' = 'Developer',
+         'id' = 'Application...Job..',
+         'substation' = 'Substation', 
+         'capacity' = 'PV..kWAC.',
+         'metering' = 'Metering..NA...NM...RNM...CDG.',
+         'date' = 'Application.Approved.Date...Utility.',
+         'complete' = 'Project.Complete..Y.N.',
+         'zip' = 'Zip.Code') %>%
+  select(utility, developer, id, capacity, metering, date, complete, zip) %>% 
   mutate(date = dmy(date),
          capacity = as.numeric(capacity),
+         quarter = zoo::as.yearqtr(date, format = "%Y-%m-%d"),
+         utility = case_when(
+           utility == 'CECONY' ~ 'ConEd',
+           utility == 'NIMO' ~ 'Niagara Mohawk (NatGrid)',
+           TRUE ~ utility),
+         metering = as.factor(case_when(
+           is.na(metering) | metering == 'n/a' ~ 'Non-Metered',
+           metering == 'NM' ~ 'Net Metered',
+           metering == 'RNM' ~ 'Remote Net Metered',
+           metering == 'FIT' ~ 'Feed-In Tariff',
+           metering == 'CDG' ~ 'Community Solar',
+           TRUE ~ 'Other')),
          segment_x = case_when(
-           Metering..NA...NM...RNM...CDG. == 'CDG' ~ 'Community Solar',
+           metering == 'Community Solar' ~ 'Community Solar',
            capacity <= 20 ~ 'Residential',
            capacity > 20 ~ 'Non-Residential'
-         ),
-         n = 1,
-         quarter = zoo::as.yearqtr(date, format = "%Y-%m-%d")) %>% 
+           )) %>% 
   filter(!is.na(capacity))
-```
 
-```{r include = FALSE}
-ny_sum <- ny_clean2 %>% 
+ny_quarter <- ny %>% 
   filter(date >= '2020-07-01',
          quarter != '2021 Q3') %>% 
   group_by(segment_x, quarter) %>% 
   summarise(cap = sum(capacity)/1000)
 
-ny_2 <- ny_clean2 %>% 
+ny_seg <- ny %>% 
   filter(quarter == '2021 Q2') %>% 
   mutate(res_cap = if_else(segment_x == 'Residential', capacity, 0),
          com_cap = if_else(segment_x == 'Non-Residential', capacity, 0),
@@ -100,10 +85,10 @@ ny_2 <- ny_clean2 %>%
         month = month(date))
 ```
 
-## New York added **`r round(sum(ny_2$capacity)/1000,2)` MW** of new distributed solar capacity to the interconnection queue in Q2 2021
+## New York added **`r round(sum(ny_seg$capacity)/1000,2)` MW** of new distributed solar capacity to the interconnection queue in Q2 2021
 
 ```{r echo = FALSE}
-ny_sum %>%
+ny_quarter %>%
   hchart('column', hcaes(x = as.factor(quarter), y = round(cap,2), group = segment_x)) %>% 
   hc_colors(c('#F37325', '#2490BD', "#47B970", '#1A2B40', '#b7b7b7', '#800000','#F8AA1A')) %>% 
   hc_plotOptions(series = list(stacking = 'normal')) %>% 
@@ -113,48 +98,92 @@ ny_sum %>%
        
 ```
 
-```{r include = FALSE}
-ny_2_seg2 <- ny_2 %>% 
-  mutate(meter = Metering..NA...NM...RNM...CDG.) %>% 
-  mutate(meter = as.factor(case_when(
-    is.na(meter) | meter == 'n/a' ~ 'Non-Metered',
-    meter == 'NM' ~ 'Net Metered',
-    meter == 'RNM' ~ 'Remote Net Metered',
-    meter == 'CDG' ~ 'Community Solar'
-  ))) %>% 
-  group_by(meter) %>% 
-  summarise(cap = sum(capacity),
-            n = n(),
-            mean = mean(capacity)) %>% 
-  ungroup() %>% 
-  mutate(share = cap/sum(cap))
-```
-
-## Of this **`r round(sum(ny_2$capacity/1000),2)` MW** of new capacity...
+## Of this **`r round(sum(ny_seg$capacity/1000),2)` MW** of new capacity...
 
 ```{r results = 'asis', echo = FALSE}
-for (k in levels(ny_2_seg2$meter)) {
-  cat("- ", "**", round(ny_2_seg2$cap[ny_2_seg2$meter == k]/1000,2), "**", " MW was ", k, sep = "")
+ny_meter <- ny %>% 
+  group_by(metering) %>% 
+  summarise(cap = sum(capacity)) 
+  
+
+for (k in levels(ny_meter$metering)) {
+  cat("- ", "**", round(ny_meter$cap[ny_meter$metering == k]/1000,2), "**", " MW was ", k, sep = "")
   cat("\n")
 }
 ```
 
 ```{r echo = FALSE}
-ny_2_seg2 %>% 
-  hchart('pie', hcaes(x = meter, y = round(cap/1000,2)), name = "Capacity (MW)") %>% 
-  hc_colors(c( '#2490BD', '#F37325', "#47B970", '#1A2B40', '#b7b7b7', '#F8AA1A', '#800000')) 
-
+ny %>% 
+  group_by(metering) %>% 
+  summarise(cap = sum(capacity)) %>% 
+  hchart('pie', hcaes(x = metering, y = round(cap/1000,2)), name = "Capacity (MW)") %>% 
+  hc_colors(c( '#2490BD', '#F37325', "#47B970", '#1A2B40', '#b7b7b7', '#F8AA1A', '#800000'))
 ```
 
+
+## Where was new capacity added in Q2 2021?
+
+```{r include = FALSE}
+ny_map <- ny %>% 
+  mutate(geoid2 = as.numeric(substr(zip,1,5))) %>% 
+  filter(!geoid2 == 16807|!geoid2 == 17047) %>% 
+  group_by(geoid2) %>% 
+  summarise(cap = sum(capacity)/1000)
+
+nymap <- st_read('raw data/NY/acs2019_5yr_B01003_86000US14475.shp') %>% 
+  mutate(geoid2 = as.numeric(substr(geoid,8,12))) %>% 
+  filter(!name == 'New York') %>% 
+  left_join(ny_map, by = 'geoid2')
+
+zip <- read.csv('raw data/uszips.csv') %>% 
+  select(zip, city) %>% 
+  rename('geoid2' = 'zip')
+
+ny_int <- left_join(nymap, zip, by = 'geoid2') %>% 
+  mutate(cap = cap*1000,
+         cap = round(cap,0), 
+         cap2 = if_else(is.na(cap),0,cap))
+
+map_pal <- c('#e0f1f9', '#2490BD') 
+
+pal <- colorNumeric(palette = map_pal, domain = ny_int$cap, na.color = '#FFFFFF')
+labels <- sprintf("<strong>%s</strong><br/> Zip code: %s<br/> Capacity Q2 2021: %s kW",
+                  ny_int$city, paste(0, ny_int$geoid2, sep = ""), comma(ny_int$cap2)) %>% 
+  lapply(HTML)
+
+map_int <- leaflet(ny_int) %>% addTiles()
+```
+
+```{r echo = FALSE}
+map_int %>% addPolygons(fillColor = ~pal(cap),
+                        weight = 0.5,
+                        opacity = 1,
+                        color = "gray",
+                        dashArray = "3",
+                        fillOpacity = 0.7,
+                        highlightOptions = highlightOptions(color = '#2a2a2a',
+                                                            weight = 2,
+                                                            dashArray = "",
+                                                            fillOpacity = 0.7,
+                                                            bringToFront = T),
+                        label = labels,
+                        labelOptions = labelOptions(
+                          style = list("font-weight" = "normal", padding = "3px 8px"),
+                          textsize = "15px",
+                          direction = "auto",
+                          opacity = 0.75)) %>% 
+  addProviderTiles('Esri.WorldGrayCanvas')
+```
 
 ## Which utilities added the most capacity in Q2 2021?
 
 ```{r include = FALSE}
-ny_2_ut <- ny_2 %>%
+ny_2_ut <- ny_seg %>%
   group_by(utility) %>% 
   summarise(cap = sum(capacity))
 
-ny_2_ut2 <- ny_2 %>%
+ny_2_ut2 <- ny_seg %>%
+  mutate(month = month(date)) %>% 
   group_by(utility, month) %>% 
   summarise(cap = sum(capacity)) %>% 
   mutate(month = factor(month, levels = c(4, 5, 6), labels = c('April', 'May', 'June')))
@@ -183,7 +212,7 @@ ny_2_ut2 %>%
 ## Which developers added the most capacity in Q2 2021?
 
 ```{r include = FALSE}
-ny_2 <- ny_2 %>% 
+ny <- ny %>% 
   mutate(dev_agg = case_when(
     grepl('tesla|solarcity|solar city', developer, ignore.case = T) ~ 'Tesla/SolarCity',
     grepl('momentum', developer, ignore.case = T) ~ 'Momentum Solar',
@@ -241,7 +270,7 @@ ny_2 <- ny_2 %>%
     TRUE ~ developer    
   ))
 
-ny_2_dev <- ny_2 %>% 
+ny_sum <- ny %>% 
   group_by(dev_agg, segment_x) %>% 
   summarise(cap = sum(capacity),
             n = n(),
@@ -254,7 +283,7 @@ ny_2_dev <- ny_2 %>%
 ### Top 10 developers in the residential segment:
 
 ```{r echo = FALSE}
-ny_2_dev %>% filter(segment_x == 'Residential') %>%
+ny_sum %>% filter(segment_x == 'Residential') %>%
   head(10) %>%
   select(dev_agg, cap, n, share) %>% 
   mutate(share = paste(round(share*100,2), "%", sep = ""),
@@ -270,7 +299,7 @@ ny_2_dev %>% filter(segment_x == 'Residential') %>%
 ### Top 10 developers in the commercial segment:
 
 ```{r echo = FALSE}
-ny_2_dev %>% filter(segment_x == 'Non-Residential') %>%
+ny_sum %>% filter(segment_x == 'Non-Residential') %>%
   head(10) %>%
   select(dev_agg, cap, n, share) %>% 
   mutate(share = paste(round(share*100,2), "%", sep = ""),
@@ -285,7 +314,7 @@ ny_2_dev %>% filter(segment_x == 'Non-Residential') %>%
 ### Top 10 developers active in the community solar segment:
 
 ```{r echo = FALSE}
-ny_2_dev %>% filter(segment_x == 'Community Solar') %>%
+ny_sum %>% filter(segment_x == 'Community Solar') %>%
   head(10) %>%
   select(dev_agg, cap, n, share) %>% 
   mutate(share = paste(round(share*100,2), "%", sep = ""),
@@ -297,128 +326,11 @@ ny_2_dev %>% filter(segment_x == 'Community Solar') %>%
   kableExtra::add_header_above(c("Q2 2021" = 4))
 ```
 
-## Where was new capacity added in Q2 2021?
+## Filter data
 
 ```{r include = FALSE}
-ny_map <- ny_2 %>% 
-  mutate(geoid2 = as.numeric(substr(zip,1,5))) %>% 
-  filter(!geoid2 == 16807|!geoid2 == 17047) %>% 
-  group_by(geoid2) %>% 
-  summarise(cap = sum(capacity)/1000)
-
-nymap <- st_read('raw data/NY/acs2019_5yr_B01003_86000US14475.shp') %>% 
-  mutate(geoid2 = as.numeric(substr(geoid,8,12))) %>% 
-  filter(!name == 'New York')
-
-ny__map <- left_join(nymap, ny_map, by = 'geoid2')
-```
-
-```{r include = FALSE}
-zip <- read.csv('raw data/uszips.csv')
-
-zip_join <- zip %>% 
-  select(zip, city) %>% 
-  rename('geoid2' = 'zip')
-
-ny_int <- left_join(ny__map, zip_join, by = 'geoid2') %>% 
-  mutate(cap = cap*1000)
-
-ny_int <- filter(ny_int, name != 'New Jersey')
-ny_int <- mutate(ny_int, cap = round(cap,0), cap2 = if_else(is.na(cap),0,cap))
-
-blue_mon <- c('#e0f1f9', '#2490BD') 
-
-pal <- colorNumeric(palette = blue_mon, domain = ny_int$cap, na.color = '#FFFFFF')
-labels <- sprintf("<strong>%s</strong><br/> Zip code: %s<br/> Capacity Q2 2021: %s kW",
-                  ny_int$city, paste(0, ny_int$geoid2, sep = ""), comma(ny_int$cap2)) %>% 
-  lapply(HTML)
-
-map_int <- leaflet(ny_int) %>% addTiles()
-```
-
-```{r echo = FALSE}
-map_int %>% addPolygons(fillColor = ~pal(cap),
-                        weight = 0.5,
-                        opacity = 1,
-                        color = "gray",
-                        dashArray = "3",
-                        fillOpacity = 0.7,
-                        highlightOptions = highlightOptions(color = '#2a2a2a',
-                                                            weight = 2,
-                                                            dashArray = "",
-                                                            fillOpacity = 0.7,
-                                                            bringToFront = T),
-                        label = labels,
-                        labelOptions = labelOptions(
-                          style = list("font-weight" = "normal", padding = "3px 8px"),
-                          textsize = "15px",
-                          direction = "auto",
-                          opacity = 0.75)) %>% 
-  addProviderTiles('Esri.WorldGrayCanvas')
-```
-
-## Filter and download data
-
-```{r include = FALSE}
-ny_2_table <- ny_2 %>% 
-  mutate(dev_agg = case_when(
-    grepl('tesla|solarcity|solar city', developer, ignore.case = T) ~ 'Tesla/SolarCity',
-    grepl('momentum', developer, ignore.case = T) ~ 'Momentum Solar',
-    grepl('vivint|sunrun', developer, ignore.case = T) ~ 'Vivint/SunRun',
-    grepl('sunpower|sun power', developer, ignore.case = T) ~ 'SunPower',
-    grepl('venture', developer, ignore.case = T) ~ 'Venture Solar',
-    grepl('trinity', developer, ignore.case = T) ~ 'Trinity Solar',
-    grepl('empire', developer, ignore.case = T) ~ 'Empire Solar Solutions',
-    grepl('plug', developer, ignore.case = T) ~ 'PlugPV',
-    grepl('kasselman', developer, ignore.case = T) ~ 'Kasselman Solar',
-    grepl('new york state solar|ny state solar', developer, ignore.case = T) ~ 'New York State Solar Farm',
-    grepl('suncommon', developer, ignore.case = T) ~ 'SunCommon',
-    grepl('infinity', developer, ignore.case = T) ~ 'Infinity Solar',
-    grepl('borrego', developer, ignore.case = T) ~ 'Borrego Solar',
-    grepl('resunance', developer, ignore.case = T) ~ 'RESunance',
-    grepl('atlas', developer, ignore.case = T) ~ 'Atlas Renewables (CAERO Group)',
-    grepl('amp solar d|amp solar u', developer, ignore.case = T) ~ 'Amp Solar',
-    grepl('nexamp', developer, ignore.case = T) ~ 'Nexamp',
-    grepl('renesola', developer, ignore.case = T) ~ 'ReneSolar Power Holdings',
-    grepl('g&s', developer, ignore.case = T) ~ 'G&S Solar',
-    grepl('delaware', developer, ignore.case = T) ~ 'Delaware River Solar',
-    grepl('arcadia', developer, ignore.case = T) ~ 'Arcadia',
-    grepl('oya', developer, ignore.case = T) ~ 'OYA Solar',
-    grepl('citizens', developer, ignore.case = T) ~ 'Citizens Energy',
-    grepl('long island', developer, ignore.case = T) ~ 'Long Island Power Solutions',
-    grepl('kamtech|kam tech', developer, ignore.case = T) ~ 'Kamtech Solar',
-    grepl('harvest', developer, ignore.case = T) ~ 'Harvest Power',
-    grepl('empower', developer, ignore.case = T) ~ 'EmPower Solar',
-    grepl('sunation', developer, ignore.case = T) ~ 'SUNation Solar',
-    grepl('montante', developer, ignore.case = T) ~ 'Montante Solar',
-    grepl('liberty', developer, ignore.case = T) ~ 'Solar Liberty Energy',
-    grepl('lodestar', developer, ignore.case = T) ~ 'Lodestar Energy',
-    grepl('omni', developer, ignore.case = T) ~ 'Omni-Navitas',
-    grepl('bw ', developer, ignore.case = T) ~ 'BW Solar',
-    grepl('aura', developer, ignore.case = T) ~ 'Aura Power',
-    grepl('ric d|ric e', developer, ignore.case = T) ~ 'RIC Development',
-    grepl('caero', developer, ignore.case = T) ~ 'CAERO Group',
-    grepl('solitude', developer, ignore.case = T) ~ 'Solitude Solar',
-    grepl('cypress c', developer, ignore.case = T) ~ 'Cypress Creek Renewables',
-    grepl('saturn', developer, ignore.case = T) ~ 'Saturn Power Corporation',
-    grepl('green l|greenl', developer, ignore.case = T) ~ 'Green Logic',
-    grepl('hudson', developer, ignore.case = T) ~ 'Hudson River',
-    grepl('microgrid', developer, ignore.case = T) ~ 'MicroGrid Networks',
-    grepl('nextera|next era|dg new', developer, ignore.case = T) ~ 'NextEra Energy (DG New York CS)',
-    grepl('eden', developer, ignore.case = T) ~ 'Eden Renewables',
-    grepl('nexamp', developer, ignore.case = T) ~ 'Nexamp',
-    grepl('source r', developer, ignore.case = T) ~ 'Source Renewables',
-    grepl('CVE', developer) ~ 'CVE North America',
-    grepl('convergent', developer) ~ 'Convergent Energy & Power',
-    grepl('Nexus', developer) ~ 'Nexus Renewables',
-    grepl('Dyna', developer) ~ 'DynaSolar DevCo',
-    grepl('siemens', developer, ignore.case = T) ~ 'Siemens',
-    grepl('Oriden', developer) ~ 'Oriden',
-    grepl('sunrise', developer, ignore.case = T) ~ 'Sunrise Power Solutions',
-    TRUE ~ developer    
-  )) %>% 
+ny_table <- ny %>%  
   select(dev_agg, capacity, date, utility, segment_x, zip) %>% 
- # mutate('Number of Projects' = 1) %>% 
   rename('Developer' = dev_agg, 'Capacity' = capacity, 'Date' = date, 'Utility' = utility, 'Segment' = segment_x, 'Zip Code' = zip)
 
 ```
@@ -426,7 +338,7 @@ ny_2_table <- ny_2 %>%
 
 ```{r echo = FALSE}
 
-reactable(ny_2_table, filterable = TRUE,
+reactable(ny_table, filterable = TRUE,
           columns = list(Capacity = colDef(filterable = FALSE)),
           searchable = TRUE,
           showPageSizeOptions = TRUE,
