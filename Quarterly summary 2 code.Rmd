@@ -58,7 +58,7 @@ varreplace <- c('utility',
                 'zip')
 
 ny <-   do.call(rbind,
-          lapply(list.files(path = "raw data/NY/solar"), read.csv)) %>%
+          lapply(list.files(path = "raw data/NY/solar"), read.csv)) %>% # import all 6 raw data files in one line
   select(varnames) %>% 
   rename_at(vars(varnames), ~varreplace) %>% 
   mutate(date = dmy(date),
