@@ -23,9 +23,9 @@ output:
 
 This website is a portfolio of the skills I have developed in data science, data visualization, and econometrics whilst pursing my Master's of Public Administration (MPA) in energy policy and data analytics at Columbia University.
 
-*description of solar data - interactive charts AND MAPS*
+**Distributed solar market data** is a sample of interactive charts and maps visualizing market developments in US states' behind-the-meter solar markets. I collected raw interconnection data from states' investor-owned utilities, and then cleaned, manipulated, and visualized the data in R.
 
-*description of econometrics paper*
+**Econometrics Paper** is my final project for my Columbia course *Data Analysis for Policy Research Using R*. It employs regression analysis to examine the unexpected causal links between lockdowns, mobility, and improved air quality in spring 2020 in the United States.
 
 ## Data sources
 
@@ -33,10 +33,9 @@ This website is a portfolio of the skills I have developed in data science, data
 
 2. New Jersey: New Jersey's Clean Energy Program [Solar Activity Reports](https://njcleanenergy.com/renewable-energy/project-activity-reports/project-activity-reports)
 
-3. Air quality (to be updated)
+3. Air quality: The US EPA's [Outdoor Air Quality Database](https://www.epa.gov/outdoor-air-quality-data)
 
-4. Mobility (to be updated)
-
+4. Mobility: University of Maryland [COVID-19 Impact Analysis Platform](https://data.covid.umd.edu/)
 
 </div>
 <div class="col-sm-6">
