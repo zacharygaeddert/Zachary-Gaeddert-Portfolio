@@ -21,9 +21,9 @@ output:
 
 # **Professional and academic data science portfolio**
 
-This website is a portfolio of the skills I have developed in data science, data visualization, and econometrics whilst pursing my Master's of Public Administration (MPA) in energy policy and data analytics at Columbia University.
+This website is a portfolio of the skills I have developed in data science, data visualization, and econometrics whilst pursuing my Master's of Public Administration (MPA) in energy policy and data analytics at Columbia University.
 
-**Distributed solar market data** is a sample of interactive charts and maps visualizing market developments in US states' behind-the-meter solar markets. I collected raw interconnection data from states' investor-owned utilities, and then cleaned, manipulated, and visualized the data in R.
+**Distributed solar market data** is a sample of interactive charts and maps visualizing developments in US states' behind-the-meter solar markets in Q2 2021. I collected raw interconnection data from states' investor-owned utilities, and then cleaned, manipulated, and visualized the data in R.
 
 **Econometrics Paper** is my final project for my Columbia course *Data Analysis for Policy Research Using R*. It employs regression analysis to examine the unexpected causal links between lockdowns, mobility, and improved air quality in spring 2020 in the United States.
 
