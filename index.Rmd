@@ -37,6 +37,8 @@ This website is a portfolio of the skills I have developed in data science, data
 
 4. Mobility: University of Maryland [COVID-19 Impact Analysis Platform](https://data.covid.umd.edu/)
 
+Check out my Shiny Apps
+
 </div>
 <div class="col-sm-6">
 
