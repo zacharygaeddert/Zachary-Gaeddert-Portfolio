@@ -28,7 +28,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <center> <font size = 2> New York State Distributed Solar Capacity Installations - CY2021 </font>
 <br>
 
-[![](images/shiny_1.png){width=50%}](zacharyg.shinyapps.io/ny_distriburted_solar)
+[![](images/shiny_1.png){width=50%}](https://zacharyg.shinyapps.io/ny_distributed_solar)
 
 <br> <br>
 </center>
@@ -40,7 +40,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <center> <font size = 2> Interactive Dashboard of Global GHG Emissions Data </font> 
 <br>
 
-[![](images/shiny_2.png){width=50%}](zacharyg.shinyapps.io/global_emissions)
+[![](images/shiny_2.png){width=50%}](https://zacharyg.shinyapps.io/global_emissions)
 
 <br> <br>
 </center>
