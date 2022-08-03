@@ -30,7 +30,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [![](images/shiny_1.png){width=50%}](https://zacharyg.shinyapps.io/ny_distributed_solar)
 
-<br> <br>
+<br> <br> <br>
 </center>
 </div>
 <div class="col-sm-6">
@@ -42,7 +42,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [![](images/shiny_2.png){width=50%}](https://zacharyg.shinyapps.io/global_emissions)
 
-<br> <br>
+<br> <br> <br>
 </center>
 </div>
 
