@@ -1,0 +1,52 @@
+---
+title: "rshiny"
+output: 
+  html_document:
+    theme: yeti
+---
+
+<style type="text/css">
+.title {
+  display: none;
+}
+
+#getting-started img {
+  margin-right: 5px;
+}
+
+</style>
+
+<div class="row" style="padding-top: 30px;">
+<div class="col-sm-6">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## For work:
+<br>
+<center> <font size = 2> New York State Distributed Solar Capacity Installations - CY2021 </font>
+<br>
+
+[![](images/shiny_1.png){width=50%}](zacharyg.shinyapps.io/ny_distriburted_solar)
+
+<br> <br>
+</center>
+</div>
+<div class="col-sm-6">
+
+## For fun:
+<br>
+<center> <font size = 2> Interactive Dashboard of Global GHG Emissions Data </font> 
+<br>
+
+[![](images/shiny_2.png){width=50%}](zacharyg.shinyapps.io/global_emissions)
+
+<br> <br>
+</center>
+</div>
+
+ 
+
+
+### ...more to come!

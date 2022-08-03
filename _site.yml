@@ -1,17 +1,12 @@
 name: "Professional and academic data science portfolio"
 navbar:
   title: "Home"
+  href: index.html
   left:
-    - text: "Distributed solar market data"
-      menu:
-      - text: "New York"
-        href: Quarterly-summary-2.html
-      - text: "New Jersey"
-        href: Quarterly-summary-1.html
-      - text: "New York (with code)"
-        href: Quarterly-summary-2-code.html
-      - text: "New Jersey (with code)"
-        href: Quarterly-summary-1-code.html
-    - text: "Econometrics paper"
+    - text: "ShinyApps"
+      href: shiny_apps.html
+    - text: "Econometrics Paper"
       href: Econometrics-with-R.pdf
+    - text: "CV/Resume"
+      href: zachary_gaeddert_cv_august2022.pdf
 output_dir: "docs"

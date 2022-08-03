@@ -1,0 +1,62 @@
+---
+title: "Professional and academic data science portfolio"
+output: 
+  html_document:
+    theme: yeti
+---
+
+<style type="text/css">
+.title {
+  display: none;
+}
+
+#getting-started img {
+  margin-right: 5px;
+}
+
+</style>
+
+<div class="row" style="padding-top: 30px;">
+<div class="col-sm-6">
+
+# **Professional and academic data science portfolio**
+
+This website is a portfolio of the skills I have developed in data science, data visualization, and econometrics whilst pursuing my Master's of Public Administration (MPA) in energy policy and data analytics at Columbia University.
+
+**Distributed solar market data** is a sample of interactive charts and maps visualizing developments in US states' behind-the-meter solar markets in Q2 2021. I collected raw interconnection data from states' investor-owned utilities, and then cleaned, manipulated, and visualized the data in R.
+
+**Econometrics Paper** is my final project for my Columbia course *Data Analysis for Policy Research Using R*. It employs regression analysis to examine the unexpected causal links between lockdowns, mobility, and improved air quality in spring 2020 in the United States.
+
+## Data sources
+
+1. New York: Directly reported by investor-owned utilities, accessed via [NYISO's SIR Inventory](https://www3.dps.ny.gov/W/PSCWeb.nsf/All/286D2C179E9A5A8385257FBF003F1F7E)
+
+2. New Jersey: New Jersey's Clean Energy Program [Solar Activity Reports](https://njcleanenergy.com/renewable-energy/project-activity-reports/project-activity-reports)
+
+3. Air quality: The US EPA's [Outdoor Air Quality Database](https://www.epa.gov/outdoor-air-quality-data)
+
+4. Mobility: University of Maryland [COVID-19 Impact Analysis Platform](https://data.covid.umd.edu/)
+
+Check out my Shiny Apps
+
+</div>
+<div class="col-sm-6">
+
+<center>
+
+![](images/sipa.jpg){width=50%}
+
+</center>
+
+## About me
+
+I have four years of professional experience in energy and decarbonization policy. While the bulk of my work has surrounded market and policy frameworks to facilitate deployment of low-carbon and energy-efficient heating and cooling technologies, I have also contributed extensively to projects concerning the role of policy in abating urban transport emissions, strategies to reduce carbon leakage in the EU ETS, and the potential for distributed renewables to facilitate energy access in off-grid areas. My research pertaining to energy and development has been published by the [International Renewable Energy Agency](https://www.irena.org/publications/2020/Nov/Renewable-Energy-Policies-in-a-Time-of-Transition-Heating-and-Cooling), [World Wildlife Foundation](https://www.vivideconomics.com/wp-content/uploads/2019/10/WWF_Report_VIVID_Climate_2019_web.pdf), and [Inter-American Development Bank](http://www.itc.gov.bz/uploads/1/2/7/5/12751065/regional_economic_development_master_plan_for_corozal____action_plan_final.pdf), and will also contribute significantly to the development of NYSERDA’s forthcoming Building Electrification Roadmap, a component of $230m [NYS Clean Heat Market Development Plan](https://www.energy.gov/sites/prod/files/2020/12/f81/bto-2020-peer-preview-nyserda-electrification.pdf).
+
+zdg2105@columbia.edu
+
++1 470-622-4978
+
+[LinkedIn](https://www.linkedin.com/in/zachary-gaeddert-7584b26a/)
+
+</a>
+</div>

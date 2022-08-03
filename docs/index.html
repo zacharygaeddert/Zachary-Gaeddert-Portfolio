@@ -13,13 +13,22 @@
 
 <title>Professional and academic data science portfolio</title>
 
-<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -34,11 +43,6 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -51,32 +55,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
 
@@ -87,10 +65,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -107,40 +81,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 45px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-.section h2 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-.section h3 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-.section h4 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-.section h5 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
-.section h6 {
-  padding-top: 50px;
-  margin-top: -50px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -168,7 +115,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -180,7 +127,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -191,10 +138,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -206,7 +166,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -282,29 +241,14 @@ $(document).ready(function () {
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Distributed solar market data
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="Quarterly-summary-2.html">New York</a>
-    </li>
-    <li>
-      <a href="Quarterly-summary-1.html">New Jersey</a>
-    </li>
-    <li>
-      <a href="Quarterly-summary-2-code.html">New York (with code)</a>
-    </li>
-    <li>
-      <a href="Quarterly-summary-1-code.html">New Jersey (with code)</a>
-    </li>
-  </ul>
+        <li>
+  <a href="shiny_apps.html">ShinyApps</a>
 </li>
 <li>
-  <a href="Econometrics-with-R.pdf">Econometrics paper</a>
+  <a href="Econometrics-with-R.pdf">Econometrics Paper</a>
+</li>
+<li>
+  <a href="zachary_gaeddert_cv_august2022.pdf">CV/Resume</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -314,7 +258,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -329,7 +273,7 @@ $(document).ready(function () {
 }
 
 #getting-started img {
-  margin-right: 10px;
+  margin-right: 5px;
 }
 
 </style>
@@ -337,29 +281,26 @@ $(document).ready(function () {
 <div id="professional-and-academic-data-science-portfolio" class="section level1 col-sm-6">
 <h1><strong>Professional and academic data science portfolio</strong></h1>
 <p>This website is a portfolio of the skills I have developed in data science, data visualization, and econometrics whilst pursuing my Master’s of Public Administration (MPA) in energy policy and data analytics at Columbia University.</p>
-<p><strong>Distributed solar market data</strong> is a sample of interactive charts and maps visualizing developments in US states’ behind-the-meter solar markets in Q2 2021. I collected raw interconnection data from states’ investor-owned utilities, and then cleaned, manipulated, and visualized the data in R.</p>
-<p><strong>Econometrics Paper</strong> is my final project for my Columbia course <em>Data Analysis for Policy Research Using R</em>. It employs regression analysis to examine the unexpected causal links between lockdowns, mobility, and improved air quality in spring 2020 in the United States.</p>
-<div id="data-sources" class="section level2">
-<h2>Data sources</h2>
-<ol style="list-style-type: decimal">
-<li><p>New York: Directly reported by investor-owned utilities, accessed via <a href="https://www3.dps.ny.gov/W/PSCWeb.nsf/All/286D2C179E9A5A8385257FBF003F1F7E">NYISO’s SIR Inventory</a></p></li>
-<li><p>New Jersey: New Jersey’s Clean Energy Program <a href="https://njcleanenergy.com/renewable-energy/project-activity-reports/project-activity-reports">Solar Activity Reports</a></p></li>
-<li><p>Air quality: The US EPA’s <a href="https://www.epa.gov/outdoor-air-quality-data">Outdoor Air Quality Database</a></p></li>
-<li><p>Mobility: University of Maryland <a href="https://data.covid.umd.edu/">COVID-19 Impact Analysis Platform</a></p></li>
-</ol>
-</div>
-</div>
-<div class="col-sm-6">
+<p><strong>Shiny Apps</strong>: Having completed the course <em>Econometrics with R</em> at Columbia, I was hired by a start-up to build an interactive dashboard for their <a href="dgplusdesign.com/research#solar">Distributed Solar Market Reports</a>. The <a href="zacharyg.shinyapps.io/ny_distributed_solar">first dashboard</a> is a simplified sample of the subscription-based dashboard. To further develop my skills in reactive coding and data manipulation/presentation, I have built more Shiny dashboards in my free time concerning topics about which I feel passionate, for example, this <a href="zacharyg.shinyapps.io/global_emissions">Interactive Dashboard of Global Emissions Data</a></p>
+<p><strong>Econometrics Paper</strong> is my final project for my Columbia course <em>Applied Econometrics</em>. It employs regression analysis to examine the unexpected causal links between lockdowns, mobility, and improved air quality in spring 2020 in the United States.</p>
 <center>
 <p><img src="images/sipa.jpg" style="width:50.0%" /></p>
 </center>
+</div>
+<div class="col-sm-6">
+
+<center>
+<p><img src="images/LinkedIn.jpg" style="width:80.0%" /></p>
+</center>
+<p><br> <br></p>
 <div id="about-me" class="section level2">
-<h2>About me</h2>
-<p>I have four years of professional experience in energy and decarbonization policy. While the bulk of my work has surrounded market and policy frameworks to facilitate deployment of low-carbon and energy-efficient heating and cooling technologies, I have also contributed extensively to projects concerning the role of policy in abating urban transport emissions, strategies to reduce carbon leakage in the EU ETS, and the potential for distributed renewables to facilitate energy access in off-grid areas. My research pertaining to energy and development has been published by the <a href="https://www.irena.org/publications/2020/Nov/Renewable-Energy-Policies-in-a-Time-of-Transition-Heating-and-Cooling">International Renewable Energy Agency</a>, <a href="https://www.vivideconomics.com/wp-content/uploads/2019/10/WWF_Report_VIVID_Climate_2019_web.pdf">World Wildlife Foundation</a>, and <a href="http://www.itc.gov.bz/uploads/1/2/7/5/12751065/regional_economic_development_master_plan_for_corozal____action_plan_final.pdf">Inter-American Development Bank</a>, and will also contribute significantly to the development of NYSERDA’s forthcoming Building Electrification Roadmap, a component of $230m <a href="https://www.energy.gov/sites/prod/files/2020/12/f81/bto-2020-peer-preview-nyserda-electrification.pdf">NYS Clean Heat Market Development Plan</a>.</p>
-<p><a href="mailto:zdg2105@columbia.edu" class="email">zdg2105@columbia.edu</a></p>
-<p>+1 470-622-4978</p>
-<p><a href="https://www.linkedin.com/in/zachary-gaeddert-7584b26a/">LinkedIn</a></p>
-<p></a></p>
+<h2><strong>About me:</strong></h2>
+<p><justify> I have four years of professional experience in energy and decarbonization policy. While the bulk of my work has surrounded market and policy frameworks to facilitate deployment of low-carbon and energy-efficient heating and cooling technologies, I have also contributed extensively to projects concerning the role of policy in abating urban transport emissions, strategies to reduce carbon leakage in the EU ETS, and the potential for distributed renewables to facilitate energy access in off-grid areas. My research pertaining to energy and development has been published by the <a href="https://www.irena.org/publications/2020/Nov/Renewable-Energy-Policies-in-a-Time-of-Transition-Heating-and-Cooling">International Renewable Energy Agency</a>, <a href="https://www.vivideconomics.com/wp-content/uploads/2019/10/WWF_Report_VIVID_Climate_2019_web.pdf">World Wildlife Fund</a>, and <a href="http://www.itc.gov.bz/uploads/1/2/7/5/12751065/regional_economic_development_master_plan_for_corozal____action_plan_final.pdf">Inter-American Development Bank</a>, and will also contribute significantly NYSERDA’s forthcoming Building Electrification Roadmap, a component of the $230m <a href="https://www.energy.gov/sites/prod/files/2020/12/f81/bto-2020-peer-preview-nyserda-electrification.pdf">NYS Clean Heat Market Development Plan</a>. </justify> <br> <br></p>
+<div id="contact" class="section level3">
+<h3><strong>Contact:</strong></h3>
+<p><a href="mailto:zdg125@columbia.edu">zdg125@columbia.edu</a></p>
+<p>+44 7736 084 636</p>
+<p><a href="https://www.linkedin.com/in/zachary-gaeddert-7584b26a">LinkedIn</a></p>
 </div>
 </div>
 
@@ -390,7 +331,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>

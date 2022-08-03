@@ -1,0 +1,10 @@
+---
+title: "rshiny"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+These are my r shiny apps
