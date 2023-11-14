@@ -8,5 +8,5 @@ navbar:
     - text: "Econometrics Paper"
       href: Econometrics-with-R.pdf
     - text: "CV/Resume"
-      href: zachary_gaeddert_cv_november2023.pdf
+      href: zachary_gaeddert_cv_november_2023.pdf
 output_dir: "docs"
